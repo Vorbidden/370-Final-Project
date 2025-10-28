@@ -39,6 +39,7 @@ function main() {
         }
     });
 
+    // NOTE: CANNOT AUTO LOAD JSON FILE WITHOUT SERVER
     // Hook up the button
     const fileUploadButton = document.querySelector("#fileUploadButton");
     fileUploadButton.addEventListener("click", () => {
