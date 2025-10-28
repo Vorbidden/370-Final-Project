@@ -140,7 +140,6 @@ function doDrawing(gl, canvas, inputTriangles) {
             state.camera.up[1] = 1.0;
             vec3.normalize(state.camera.up, state.camera.up);
         }
-        console.log("Up: " + state.camera.up + " C: " + state.camera.center);
     }
 
     setupKeypresses(state);
