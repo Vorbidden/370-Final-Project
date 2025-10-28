@@ -1,21 +1,3 @@
-setup()
-
-function setup() {
-    // Create a HTML tag to display to the user
-    var navTag = document.createElement('nav');
-    navTag.classList = "navbar navbar-expand-lg navbar-dark bg-dark";
-    navTag.innerHTML = `
-    <div>
-    <a class="navbar-brand" href="#">Assignment 4</a>
-    <a href="part1.html">Part 1</a>
-    <a href="part2.html">Part 2</a>
-    </div
-    `;
-
-    // Insert the tag into the HMTL document
-    document.getElementById('myNavBar').appendChild(navTag);
-}
-
 /**
  * A custom error function. The tag with id `webglError` must be present
  * @param  {string} tag Main description

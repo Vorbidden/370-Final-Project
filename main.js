@@ -41,27 +41,41 @@ function main() {
 
     // NOTE: CANNOT AUTO LOAD JSON FILE WITHOUT SERVER
     // Hook up the button
-    const fileUploadButton = document.querySelector("#fileUploadButton");
-    fileUploadButton.addEventListener("click", () => {
-        console.log("Submitting file...");
-        let fileInput = document.getElementById('inputFile');
-        let files = fileInput.files;
-        let url = URL.createObjectURL(files[0]);
+    // const fileUploadButton = document.querySelector("#fileUploadButton");
+    // fileUploadButton.addEventListener("click", () => {
+    //     console.log("Submitting file...");
+    //     let fileInput = document.getElementById('inputFile');
+    //     let files = fileInput.files;
+    //     let url = URL.createObjectURL(files[0]);
 
-        fetch(url, {
-            mode: 'no-cors' // 'cors' by default
-        }).then(res => {
-            return res.text();
-        }).then(data => {
-            var inputTriangles = JSON.parse(data);
+    //     fetch(url, {
+    //         mode: 'no-cors' // 'cors' by default
+    //     }).then(res => {
+    //         return res.text();
+    //     }).then(data => {
+    //         var inputTriangles = JSON.parse(data);
 
-            doDrawing(gl, canvas, inputTriangles);
+    //         doDrawing(gl, canvas, inputTriangles);
 
 
-        }).catch((e) => {
-            console.error(e);
-        });
+    //     }).catch((e) => {
+    //         console.error(e);
+    //     });
+    // });
 
+    let url = "arm.json";
+
+    fetch(url, {
+        mode: 'no-cors' // 'cors' by default
+    }).then(res => {
+        return res.text();
+    }).then(data => {
+        var inputTriangles = JSON.parse(data);
+
+        doDrawing(gl, canvas, inputTriangles);
+
+    }).catch((e) => {
+        console.error(e);
     });
 }
 
