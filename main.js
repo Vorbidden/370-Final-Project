@@ -68,6 +68,7 @@ function doDrawing(gl, canvas, inputTriangles) {
         canvas: canvas,
         selectedIndex: 0,
         hasSelected: false,
+        keysPressed: {}
     };
 
     for (var i = 0; i < inputTriangles.length; i++) {
@@ -165,13 +166,14 @@ function startRendering(gl, state) {
         const deltaTime = now - then;
         then = now;
 
+        // Movement
+        handleMovement(state);
+
         // Draw our scene
         drawScene(gl, deltaTime, state);
 
         // Request another frame when this one is done
         requestAnimationFrame(render);
-        
-        // I assume this is the main loop so this is where controls go?
     }
 
     // Draw the scene
@@ -280,16 +282,37 @@ function drawScene(gl, deltaTime, state) {
  ************************************/
 
 function setupKeypresses(state) {
-    let keysPressed = {};
-
     document.addEventListener('keydown', (event) => {
         if (!event.repeat) {
-            keysPressed[event.key] = true;
+            state.keysPressed[event.key] = true;
         }
-        
-        if (keysPressed["a"]) {
-            // Move left
-            // update at = normalize(center - pos)
+    });
+
+    document.addEventListener('keyup', (event) => {
+        delete state.keysPressed[event.key];
+    });
+}
+
+function handleMovement(state) {
+    if (state.keysPressed["a"]) {
+        // Move left
+        // at = normalize(center - pos)
+        var at = vec3.create();
+        vec3.subtract(at, state.camera.center, state.camera.position);
+        vec3.normalize(at, at);
+
+        // right = at X up
+        var right = vec3.create();
+        vec3.cross(right, at, state.camera.up);
+        right[1] = 0;
+        vec3.normalize(right, right);
+
+        vec3.add(state.camera.center, state.camera.center, vec3.fromValues(-0.01*right[0], 0.0, -0.01*right[2]));
+        vec3.add(state.camera.position, state.camera.position, vec3.fromValues(-0.01*right[0], 0.0, -0.01*right[2]));
+    }
+    if (state.keysPressed["d"]) {
+            // Move right
+            // at = normalize(center - pos)
             var at = vec3.create();
             vec3.subtract(at, state.camera.center, state.camera.position);
             vec3.normalize(at, at);
@@ -300,50 +323,28 @@ function setupKeypresses(state) {
             right[1] = 0;
             vec3.normalize(right, right);
 
-            vec3.add(state.camera.center, state.camera.center, vec3.fromValues(-0.01*right[0], 0.0, -0.01*right[2]));
-            vec3.add(state.camera.position, state.camera.position, vec3.fromValues(-0.01*right[0], 0.0, -0.01*right[2]));
-        }
-        if (keysPressed["d"]) {
-                // Move right
-                // update at = normalize(center - pos)
-                var at = vec3.create();
-                vec3.subtract(at, state.camera.center, state.camera.position);
-                vec3.normalize(at, at);
-
-                // right = at X up
-                var right = vec3.create();
-                vec3.cross(right, at, state.camera.up);
-                right[1] = 0;
-                vec3.normalize(right, right);
-
-                vec3.add(state.camera.center, state.camera.center, vec3.fromValues(0.01*right[0], 0.0, 0.01*right[2]));
-                vec3.add(state.camera.position, state.camera.position, vec3.fromValues(0.01*right[0], 0.0, 0.01*right[2]));
-        }
-        if (keysPressed["w"]) {
-            // Move forwards
-            var at = vec3.create();
-            vec3.subtract(at, state.camera.center, state.camera.position);
-            at[1] = 0;
-            vec3.normalize(at, at);
-            vec3.add(state.camera.center, state.camera.center, vec3.fromValues(0.01*at[0], 0.0, 0.01*at[2]));
-            vec3.add(state.camera.position, state.camera.position, vec3.fromValues(0.01*at[0], 0.0, 0.01*at[2]));
-        }
-        if (keysPressed["s"]) {
-            // Move backwards
-            var at = vec3.create();
-            vec3.subtract(at, state.camera.center, state.camera.position);
-            at[1] = 0;
-            vec3.normalize(at, at);
-            vec3.add(state.camera.center, state.camera.center, vec3.fromValues(-0.01*at[0], 0.0, -0.01*at[2]));
-            vec3.add(state.camera.position, state.camera.position, vec3.fromValues(-0.01*at[0], 0.0, -0.01*at[2]));
-        }
-    });
-
-    document.addEventListener('keyup', (event) => {
-        delete keysPressed[event.key];
-    });
+            vec3.add(state.camera.center, state.camera.center, vec3.fromValues(0.01*right[0], 0.0, 0.01*right[2]));
+            vec3.add(state.camera.position, state.camera.position, vec3.fromValues(0.01*right[0], 0.0, 0.01*right[2]));
+    }
+    if (state.keysPressed["w"]) {
+        // Move forwards
+        var at = vec3.create();
+        vec3.subtract(at, state.camera.center, state.camera.position);
+        at[1] = 0;
+        vec3.normalize(at, at);
+        vec3.add(state.camera.center, state.camera.center, vec3.fromValues(0.01*at[0], 0.0, 0.01*at[2]));
+        vec3.add(state.camera.position, state.camera.position, vec3.fromValues(0.01*at[0], 0.0, 0.01*at[2]));
+    }
+    if (state.keysPressed["s"]) {
+        // Move backwards
+        var at = vec3.create();
+        vec3.subtract(at, state.camera.center, state.camera.position);
+        at[1] = 0;
+        vec3.normalize(at, at);
+        vec3.add(state.camera.center, state.camera.center, vec3.fromValues(-0.01*at[0], 0.0, -0.01*at[2]));
+        vec3.add(state.camera.position, state.camera.position, vec3.fromValues(-0.01*at[0], 0.0, -0.01*at[2]));
+    }
 }
-
 /************************************
  * SHADER SETUP
  ************************************/
