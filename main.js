@@ -40,31 +40,7 @@ function main() {
     });
 
     // NOTE: CANNOT AUTO LOAD JSON FILE WITHOUT SERVER
-    // Hook up the button
-    // const fileUploadButton = document.querySelector("#fileUploadButton");
-    // fileUploadButton.addEventListener("click", () => {
-    //     console.log("Submitting file...");
-    //     let fileInput = document.getElementById('inputFile');
-    //     let files = fileInput.files;
-    //     let url = URL.createObjectURL(files[0]);
-
-    //     fetch(url, {
-    //         mode: 'no-cors' // 'cors' by default
-    //     }).then(res => {
-    //         return res.text();
-    //     }).then(data => {
-    //         var inputTriangles = JSON.parse(data);
-
-    //         doDrawing(gl, canvas, inputTriangles);
-
-
-    //     }).catch((e) => {
-    //         console.error(e);
-    //     });
-    // });
-
     let url = "arm.json";
-
     fetch(url, {
         mode: 'no-cors' // 'cors' by default
     }).then(res => {
@@ -189,6 +165,8 @@ function startRendering(gl, state) {
 
         // Request another frame when this one is done
         requestAnimationFrame(render);
+        
+        // I assume this is the main loop so this is where controls go?
     }
 
     // Draw the scene
@@ -297,142 +275,85 @@ function drawScene(gl, deltaTime, state) {
  ************************************/
 
 function setupKeypresses(state) {
+    var keyA = false;
+    var keyD = false;
+    var keyW = false;
+    var keyS = false;
+    document.addEventListener("keyup", (event) => {
+        console.log("Up: " + event.code);
+        switch (event.code) {
+            case "KeyA":
+                keyA = false;
+                break;
+            case "KeyD":
+                keyD = false;
+                break;
+            case "KeyS":
+                keyS = false;
+                break;
+            case "KeyW":
+                keyW = false;
+                break;
+        }
+    });
+
     document.addEventListener("keydown", (event) => {
         //console.log(event.code);
 
         //console.log(state.hasSelected);
         event.preventDefault("Space")
         var selectedObject = state.objects[state.selectedIndex];
+        console.log(event.code);
         switch (event.code) {
             case "KeyA":
-                if (event.getModifierState("Shift")) {
-                    if (state.hasSelected) {
-                        // TODO Rotate selected object around Y
-                        mat4.rotateY(selectedObject.model.rotation, selectedObject.model.rotation, 0.1)
-                    } else {
-                        // TODO Rotate camera around Y 
-                        // update at = normalize(center - pos)
-                        var at = vec3.create();
-                        vec3.subtract(at, state.camera.center, state.camera.position);
-                        vec3.normalize(at, at);
+                // Move left
+                // update at = normalize(center - pos)
+                var at = vec3.create();
+                vec3.subtract(at, state.camera.center, state.camera.position);
+                vec3.normalize(at, at);
 
-                        // right = at X up
-                        var right = vec3.create();
-                        vec3.cross(right, at, state.camera.up);
+                // right = at X up
+                var right = vec3.create();
+                vec3.cross(right, at, state.camera.up);
+                right[1] = 0;
+                vec3.normalize(right, right);
 
-                        // center +- e * right
-                        vec3.scale(right, right, 0.1)
-                        vec3.add(state.camera.center, state.camera.center, right)
-                    }
-                } else {
-                    if (state.hasSelected) {
-                        // TODO: Move selected object along X axis
-                        vec3.add(selectedObject.model.position, selectedObject.model.position, vec3.fromValues(0.1, 0, 0))
-                    } else {
-                        // TODO: Move camera along X axis
-                        vec3.add(state.camera.center, state.camera.center, vec3.fromValues(0.1, 0.0, 0.0));
-                        vec3.add(state.camera.position, state.camera.position, vec3.fromValues(0.1, 0.0, 0.0))
-                    }
-                }
+                vec3.add(state.camera.center, state.camera.center, vec3.fromValues(-0.01*right[0], 0.0, -0.01*right[2]));
+                vec3.add(state.camera.position, state.camera.position, vec3.fromValues(-0.01*right[0], 0.0, -0.01*right[2]))
                 break;
             case "KeyD":
-                if (event.getModifierState("Shift")) {
-                    if (state.hasSelected) {
-                        // TODO Rotate selected object around Y (other direction)
-                        mat4.rotateY(selectedObject.model.rotation, selectedObject.model.rotation, -0.1)
-                    } else {
-                        // TODO Rotate camera around Y (other direction)
+                // Move right
+                // update at = normalize(center - pos)
+                var at = vec3.create();
+                vec3.subtract(at, state.camera.center, state.camera.position);
+                vec3.normalize(at, at);
 
-                        var at = vec3.create();
-                        vec3.subtract(at, state.camera.center, state.camera.position);
-                        vec3.normalize(at, at);
+                // right = at X up
+                var right = vec3.create();
+                vec3.cross(right, at, state.camera.up);
+                right[1] = 0;
+                vec3.normalize(right, right);
 
-                        // right = at X up
-                        var right = vec3.create();
-                        vec3.cross(right, at, state.camera.up);
-
-                        // center +- e * right
-                        vec3.scale(right, right, -0.1)
-                        vec3.add(state.camera.center, state.camera.center, right)
-                    }
-                } else {
-                    if (state.hasSelected) {
-                        // TODO: Move selected object along X axis (other direction)
-                        vec3.add(selectedObject.model.position, selectedObject.model.position, vec3.fromValues(-0.1, 0, 0))
-                    } else {
-                        // TODO: Move camera along X axis (other direction)
-                        vec3.add(state.camera.center, state.camera.center, vec3.fromValues(-0.1, 0.0, 0.0));
-                        vec3.add(state.camera.position, state.camera.position, vec3.fromValues(-0.1, 0.0, 0.0))
-                    }
-                }
+                vec3.add(state.camera.center, state.camera.center, vec3.fromValues(0.01*right[0], 0.0, 0.01*right[2]));
+                vec3.add(state.camera.position, state.camera.position, vec3.fromValues(0.01*right[0], 0.0, 0.01*right[2]))
                 break;
             case "KeyW":
-                if (event.getModifierState("Shift")) {
-                    if (state.hasSelected) {
-                        // TODO: rotate selection forward and backward around view X
-                        mat4.rotateX(selectedObject.model.rotation, selectedObject.model.rotation, 0.1)
-                    } else {
-                        // TODO: Rotate camera about X axis (pitch)
-                        // center +- e * up
-                        var scaleUp = vec3.create();
-                        vec3.scale(scaleUp, state.camera.up, -0.1);
-                        vec3.add(state.camera.center, state.camera.center, scaleUp);
-
-                        // update at = normalize(center - pos)
-                        var at = vec3.create();
-                        vec3.subtract(at, state.camera.center, state.camera.position);
-                        vec3.normalize(at, at);
-
-                        // right = at X up
-                        var right = vec3.create();
-                        vec3.cross(right, at, state.camera.up);
-                        // up = right X at
-                        vec3.cross(state.camera.up, right, at);
-                    }
-                } else {
-                    if (state.hasSelected) {
-                        // TODO: Move selected object along Z axis
-                        vec3.add(selectedObject.model.position, selectedObject.model.position, vec3.fromValues(0.0, 0.0, 0.1))
-                    } else {
-                        // TODO: Move camera along Z axis
-                        vec3.add(state.camera.center, state.camera.center, vec3.fromValues(0.0, 0.0, 0.1));
-                        vec3.add(state.camera.position, state.camera.position, vec3.fromValues(0.0, 0.0, 0.1))
-                    }
-                }
+                // Move forwards
+                var at = vec3.create();
+                vec3.subtract(at, state.camera.center, state.camera.position);
+                at[1] = 0;
+                vec3.normalize(at, at);
+                vec3.add(state.camera.center, state.camera.center, vec3.fromValues(0.01*at[0], 0.0, 0.01*at[2]));
+                vec3.add(state.camera.position, state.camera.position, vec3.fromValues(0.01*at[0], 0.0, 0.01*at[2]));
                 break;
             case "KeyS":
-                if (event.getModifierState("Shift")) {
-                    if (state.hasSelected) {
-                        // TODO: rotate selection forward and backward around view X (other direction)
-                        mat4.rotateX(selectedObject.model.rotation, selectedObject.model.rotation, -0.1)
-                    } else {
-                        // TODO: Rotate camera about X axis (pitch)
-                        // center +- E * up
-                        var scaleUp = vec3.create();
-                        vec3.scale(scaleUp, state.camera.up, 0.1);
-                        vec3.add(state.camera.center, state.camera.center, scaleUp);
-
-                        // update at = normalize(center - pos)
-                        var at = vec3.create();
-                        vec3.subtract(at, state.camera.center, state.camera.position);
-                        vec3.normalize(at, at);
-
-                        // right = at X up
-                        var right = vec3.create();
-                        vec3.cross(right, at, state.camera.up);
-                        // up = right X at
-                        vec3.cross(state.camera.up, right, at);
-                    }
-                } else {
-                    if (state.hasSelected) {
-                        // TODO: Move selected object along Z axis  (other direction)
-                        vec3.add(selectedObject.model.position, selectedObject.model.position, vec3.fromValues(0.0, 0.0, -0.1))
-                    } else {
-                        // TODO: Move camera along Z axis (other direction)
-                        vec3.add(state.camera.center, state.camera.center, vec3.fromValues(0.0, 0.0, -0.1));
-                        vec3.add(state.camera.position, state.camera.position, vec3.fromValues(0.0, 0.0, -0.1))
-                    }
-                }
+                // Move backwards
+                var at = vec3.create();
+                vec3.subtract(at, state.camera.center, state.camera.position);
+                at[1] = 0;
+                vec3.normalize(at, at);
+                vec3.add(state.camera.center, state.camera.center, vec3.fromValues(-0.01*at[0], 0.0, -0.01*at[2]));
+                vec3.add(state.camera.position, state.camera.position, vec3.fromValues(-0.01*at[0], 0.0, -0.01*at[2]));
                 break;
             case "KeyQ":
                 if (event.getModifierState("Shift")) {
