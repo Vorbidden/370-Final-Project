@@ -280,52 +280,30 @@ function drawScene(gl, deltaTime, state) {
  ************************************/
 
 function setupKeypresses(state) {
-    var keyA = false;
-    var keyD = false;
-    var keyW = false;
-    var keyS = false;
-    document.addEventListener("keyup", (event) => {
-        switch (event.code) {
-            case "KeyA":
-                keyA = false;
-                break;
-            case "KeyD":
-                keyD = false;
-                break;
-            case "KeyS":
-                keyS = false;
-                break;
-            case "KeyW":
-                keyW = false;
-                break;
+    let keysPressed = {};
+
+    document.addEventListener('keydown', (event) => {
+        if (!event.repeat) {
+            keysPressed[event.key] = true;
         }
-    });
+        
+        if (keysPressed["a"]) {
+            // Move left
+            // update at = normalize(center - pos)
+            var at = vec3.create();
+            vec3.subtract(at, state.camera.center, state.camera.position);
+            vec3.normalize(at, at);
 
-    document.addEventListener("keydown", (event) => {
-        //console.log(event.code);
+            // right = at X up
+            var right = vec3.create();
+            vec3.cross(right, at, state.camera.up);
+            right[1] = 0;
+            vec3.normalize(right, right);
 
-        //console.log(state.hasSelected);
-        event.preventDefault("Space")
-        var selectedObject = state.objects[state.selectedIndex];
-
-        switch (event.code) {
-            case "KeyA":
-                // Move left
-                // update at = normalize(center - pos)
-                var at = vec3.create();
-                vec3.subtract(at, state.camera.center, state.camera.position);
-                vec3.normalize(at, at);
-
-                // right = at X up
-                var right = vec3.create();
-                vec3.cross(right, at, state.camera.up);
-                right[1] = 0;
-                vec3.normalize(right, right);
-
-                vec3.add(state.camera.center, state.camera.center, vec3.fromValues(-0.01*right[0], 0.0, -0.01*right[2]));
-                vec3.add(state.camera.position, state.camera.position, vec3.fromValues(-0.01*right[0], 0.0, -0.01*right[2]))
-                break;
-            case "KeyD":
+            vec3.add(state.camera.center, state.camera.center, vec3.fromValues(-0.01*right[0], 0.0, -0.01*right[2]));
+            vec3.add(state.camera.position, state.camera.position, vec3.fromValues(-0.01*right[0], 0.0, -0.01*right[2]));
+        }
+        if (keysPressed["d"]) {
                 // Move right
                 // update at = normalize(center - pos)
                 var at = vec3.create();
@@ -339,139 +317,30 @@ function setupKeypresses(state) {
                 vec3.normalize(right, right);
 
                 vec3.add(state.camera.center, state.camera.center, vec3.fromValues(0.01*right[0], 0.0, 0.01*right[2]));
-                vec3.add(state.camera.position, state.camera.position, vec3.fromValues(0.01*right[0], 0.0, 0.01*right[2]))
-                break;
-            case "KeyW":
-                // Move forwards
-                var at = vec3.create();
-                vec3.subtract(at, state.camera.center, state.camera.position);
-                at[1] = 0;
-                vec3.normalize(at, at);
-                vec3.add(state.camera.center, state.camera.center, vec3.fromValues(0.01*at[0], 0.0, 0.01*at[2]));
-                vec3.add(state.camera.position, state.camera.position, vec3.fromValues(0.01*at[0], 0.0, 0.01*at[2]));
-                break;
-            case "KeyS":
-                // Move backwards
-                var at = vec3.create();
-                vec3.subtract(at, state.camera.center, state.camera.position);
-                at[1] = 0;
-                vec3.normalize(at, at);
-                vec3.add(state.camera.center, state.camera.center, vec3.fromValues(-0.01*at[0], 0.0, -0.01*at[2]));
-                vec3.add(state.camera.position, state.camera.position, vec3.fromValues(-0.01*at[0], 0.0, -0.01*at[2]));
-                break;
-            case "KeyQ":
-                if (event.getModifierState("Shift")) {
-                    if (state.hasSelected) {
-                        // TODO : rotate selected object around z axis
-                        mat4.rotateZ(selectedObject.model.rotation, selectedObject.model.rotation, 0.1)
-                    }
-                } else {
-                    if (state.hasSelected) {
-                        // TODO : move selected object along Y axis 
-                        vec3.add(selectedObject.model.position, selectedObject.model.position, vec3.fromValues(0.0, 0.1, 0.0))
-
-                    } else {
-                        // TODO: move camera along Y axis
-                        vec3.add(state.camera.center, state.camera.center, vec3.fromValues(0.0, -0.1, 0.0));
-                        vec3.add(state.camera.position, state.camera.position, vec3.fromValues(0.0, -0.1, 0.0))
-                    }
-                }
-
-                break;
-            case "KeyE":
-                if (event.getModifierState("Shift")) {
-                    if (state.hasSelected) {
-                        // TODO : rotate selected object around z axis
-                        mat4.rotateZ(selectedObject.model.rotation, selectedObject.model.rotation, -0.1)
-                    }
-                } else {
-                    if (state.hasSelected) {
-                        // TODO : move selected object along Y axis 
-                        vec3.add(selectedObject.model.position, selectedObject.model.position, vec3.fromValues(0.0, -0.1, 0.0))
-
-                    } else {
-                        // TODO: move camera along Y axis
-                        vec3.add(state.camera.center, state.camera.center, vec3.fromValues(0.0, 0.1, 0.0));
-                        vec3.add(state.camera.position, state.camera.position, vec3.fromValues(0.0, 0.1, 0.0))
-                    }
-                }
-                break;
-            case "Space":
-                // TODO: Highlight
-                if (!state.hasSelected) {
-                    state.hasSelected = true;
-                    changeSelectionText(state.objects[state.selectedIndex].name);
-                    // TODO scale object here 
-                    vec3.scale(selectedObject.model.scale, selectedObject.model.scale, 1.2)
-                }
-                else {
-                    state.hasSelected = false;
-                    document.getElementById("selectionText").innerHTML = "Selection: None";
-                    // TODO scale back object here 
-                    vec3.scale(selectedObject.model.scale, selectedObject.model.scale, 0.85)
-                }
-
-                break;
-            case "ArrowLeft":
-                // Decreases object selected index value
-                if (state.hasSelected) {
-                    if (state.selectedIndex > 0) {
-                        //TODO: scale the selected object and descale the previously selected object, set state.selectedIndex to new value
-                        vec3.scale(selectedObject.model.scale, selectedObject.model.scale, 0.85)
-                        state.selectedIndex--;
-                        selectedObject = state.objects[state.selectedIndex];
-                        vec3.scale(selectedObject.model.scale, selectedObject.model.scale, 1.2)
-                    }
-                    else if (state.selectedIndex == 0) {
-                        //TODO: scale the selected object and descale the previously selected object, set state.selectedIndex to new value
-                        vec3.scale(selectedObject.model.scale, selectedObject.model.scale, 0.85)
-                        state.selectedIndex = state.objects.length - 1;
-                        selectedObject = state.objects[state.selectedIndex];
-                        vec3.scale(selectedObject.model.scale, selectedObject.model.scale, 1.2)
-                    }
-                    else {
-                        //TODO: scale the selected object and descale the previously selected object, set state.selectedIndex to new value
-                        vec3.scale(selectedObject.model.scale, selectedObject.model.scale, 0.85)
-                        state.selectedIndex--;
-                        selectedObject = state.objects[state.selectedIndex];
-                        vec3.scale(selectedObject.model.scale, selectedObject.model.scale, 1.2)
-                    }
-                    //changes the text to the object that is selected
-                    changeSelectionText(state.objects[state.selectedIndex].name);
-                }
-                break;
-            case "ArrowRight":
-                // Increases object selected index value
-                if (state.hasSelected) {
-                    if (state.selectedIndex < state.objects.length - 1) {
-                        vec3.scale(selectedObject.model.scale, selectedObject.model.scale, 0.85)
-                        state.selectedIndex++;
-                        selectedObject = state.objects[state.selectedIndex];
-                        vec3.scale(selectedObject.model.scale, selectedObject.model.scale, 1.2)
-                    }
-                    else {
-                        //TODO: scale the selected object and descale the previously selected object, set state.selectedIndex to new value
-                        vec3.scale(selectedObject.model.scale, selectedObject.model.scale, 0.85)
-                        state.selectedIndex = 0;
-                        selectedObject = state.objects[state.selectedIndex];
-                        vec3.scale(selectedObject.model.scale, selectedObject.model.scale, 1.2)
-                    }
-                    changeSelectionText(state.objects[state.selectedIndex].name);
-                }
-                break;
-            case "KeyP":
-                var viewMatrix = mat4.create();
-                mat4.lookAt(
-                    viewMatrix,
-                    state.camera.position,
-                    state.camera.center,
-                    state.camera.up,
-                );
-                console.log(viewMatrix)
-                break;
-            default:
-                break;
+                vec3.add(state.camera.position, state.camera.position, vec3.fromValues(0.01*right[0], 0.0, 0.01*right[2]));
         }
+        if (keysPressed["w"]) {
+            // Move forwards
+            var at = vec3.create();
+            vec3.subtract(at, state.camera.center, state.camera.position);
+            at[1] = 0;
+            vec3.normalize(at, at);
+            vec3.add(state.camera.center, state.camera.center, vec3.fromValues(0.01*at[0], 0.0, 0.01*at[2]));
+            vec3.add(state.camera.position, state.camera.position, vec3.fromValues(0.01*at[0], 0.0, 0.01*at[2]));
+        }
+        if (keysPressed["s"]) {
+            // Move backwards
+            var at = vec3.create();
+            vec3.subtract(at, state.camera.center, state.camera.position);
+            at[1] = 0;
+            vec3.normalize(at, at);
+            vec3.add(state.camera.center, state.camera.center, vec3.fromValues(-0.01*at[0], 0.0, -0.01*at[2]));
+            vec3.add(state.camera.position, state.camera.position, vec3.fromValues(-0.01*at[0], 0.0, -0.01*at[2]));
+        }
+    });
+
+    document.addEventListener('keyup', (event) => {
+        delete keysPressed[event.key];
     });
 }
 
