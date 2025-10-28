@@ -40,7 +40,7 @@ function main() {
     });
 
     // NOTE: CANNOT AUTO LOAD JSON FILE WITHOUT SERVER
-    let url = "arm.json";
+    let url = "world.json";
     fetch(url, {
         mode: 'no-cors' // 'cors' by default
     }).then(res => {
@@ -85,6 +85,7 @@ function doDrawing(gl, canvas, inputTriangles) {
                 buffers: undefined,
                 centroid: calculateCentroid(inputTriangles[i].vertices),
                 materialColor: inputTriangles[i].material.diffuse,
+                parent: inputTriangles[i].parent
                 // TODO: Add more object specific state like material color, ...
             }
         );
@@ -244,7 +245,18 @@ function drawScene(gl, deltaTime, state) {
             // in reverese order of how they should be applied 
             // translation (object.model.position), translation(centroid), rotation, scale, translation(negative certoid)
 
+            // tie an object to the camera
+
             var modelMatrix = mat4.create();
+            if (object.parent == "camera") {
+                var at = vec3.create();
+                vec3.subtract(at, state.camera.center, state.camera.position);
+                vec3.normalize(at, at);
+
+                var scaled = vec3.create();
+                vec3.scale(scaled, at, 0.1)
+                vec3.add(object.model.position, state.camera.position, scaled);
+            }
             mat4.translate(modelMatrix, modelMatrix, object.model.position);
 
             // move it to origin for rotation / scaling 
@@ -258,6 +270,7 @@ function drawScene(gl, deltaTime, state) {
             var negativeCentroid = vec3.create();
             vec3.scale(negativeCentroid, object.centroid, -1.0);
             mat4.translate(modelMatrix, modelMatrix, negativeCentroid);
+            
 
             // link to corresponding uniform object.programInfo.uniformLocations.[...]
             gl.uniformMatrix4fv(object.programInfo.uniformLocations.model, false, modelMatrix);
