@@ -118,7 +118,7 @@ function doDrawing(gl, canvas, inputTriangles) {
             // center +- e * right
             vec3.scale(right, right, e.movementX * 0.001)
             vec3.add(state.camera.center, state.camera.center, right)
-            state.camera.up[1] = 1.0;
+            state.camera.up[1] = 10.0;
             vec3.normalize(state.camera.up, state.camera.up);
         }
         if (e.movementY != 0) {
@@ -138,7 +138,7 @@ function doDrawing(gl, canvas, inputTriangles) {
             // up = right X at
             vec3.cross(state.camera.up, right, at);
             vec3.normalize(state.camera.up, state.camera.up);
-            state.camera.up[1] = 1.0;
+            state.camera.up[1] = 10.0;
             vec3.normalize(state.camera.up, state.camera.up);
         }
     }
