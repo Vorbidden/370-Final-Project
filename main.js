@@ -280,7 +280,6 @@ function setupKeypresses(state) {
     var keyW = false;
     var keyS = false;
     document.addEventListener("keyup", (event) => {
-        console.log("Up: " + event.code);
         switch (event.code) {
             case "KeyA":
                 keyA = false;
@@ -303,7 +302,7 @@ function setupKeypresses(state) {
         //console.log(state.hasSelected);
         event.preventDefault("Space")
         var selectedObject = state.objects[state.selectedIndex];
-        console.log(event.code);
+
         switch (event.code) {
             case "KeyA":
                 // Move left
