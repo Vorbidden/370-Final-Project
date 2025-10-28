@@ -117,6 +117,8 @@ function doDrawing(gl, canvas, inputTriangles) {
             // center +- e * right
             vec3.scale(right, right, e.movementX * 0.001)
             vec3.add(state.camera.center, state.camera.center, right)
+            state.camera.up[1] = 1.0;
+            vec3.normalize(state.camera.up, state.camera.up);
         }
         if (e.movementY != 0) {
             // center +- e * up
@@ -134,7 +136,11 @@ function doDrawing(gl, canvas, inputTriangles) {
             vec3.cross(right, at, state.camera.up);
             // up = right X at
             vec3.cross(state.camera.up, right, at);
+            vec3.normalize(state.camera.up, state.camera.up);
+            state.camera.up[1] = 1.0;
+            vec3.normalize(state.camera.up, state.camera.up);
         }
+        console.log("Up: " + state.camera.up + " C: " + state.camera.center);
     }
 
     setupKeypresses(state);
