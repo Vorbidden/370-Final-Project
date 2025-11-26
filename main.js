@@ -72,7 +72,7 @@ function main() {
 
 function doDrawing(gl, canvas, inputTriangles, inputUI) {
     // Create a state for our scene
-    console.log(inputUI);
+    console.log(inputTriangles);
     var state = {
         camera: {
             position: vec3.fromValues(0.5, 0.5, -0.5),
