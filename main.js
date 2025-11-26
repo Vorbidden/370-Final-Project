@@ -40,24 +40,39 @@ function main() {
     });
 
     // NOTE: CANNOT AUTO LOAD JSON FILE WITHOUT SERVER
-    let url = "world.json";
-    fetch(url, {
+    let urlUI = "ui.json";
+    var inputUI;
+    fetch(urlUI, {
         mode: 'no-cors' // 'cors' by default
     }).then(res => {
         return res.text();
     }).then(data => {
-        var inputTriangles = JSON.parse(data);
+        inputUI = JSON.parse(data);
 
-        doDrawing(gl, canvas, inputTriangles);
+        let url = "world.json";
+        fetch(url, {
+            mode: 'no-cors' // 'cors' by default
+        }).then(res => {
+            return res.text();
+        }).then(data => {
+            var inputTriangles = JSON.parse(data);
+
+            doDrawing(gl, canvas, inputTriangles, inputUI);
+
+        }).catch((e) => {
+            console.error(e);
+        });
 
     }).catch((e) => {
         console.error(e);
     });
+
+    
 }
 
-function doDrawing(gl, canvas, inputTriangles) {
+function doDrawing(gl, canvas, inputTriangles, inputUI) {
     // Create a state for our scene
-
+    console.log(inputUI);
     var state = {
         camera: {
             position: vec3.fromValues(0.5, 0.5, -0.5),
@@ -65,6 +80,7 @@ function doDrawing(gl, canvas, inputTriangles) {
             up: vec3.fromValues(0.0, 1.0, 0.0),
         },
         objects: [],
+        uiObjects: [],
         canvas: canvas,
         selectedIndex: 0,
         hasSelected: false,
@@ -81,17 +97,33 @@ function doDrawing(gl, canvas, inputTriangles) {
                     scale: vec3.fromValues(1.0, 1.0, 1.0),
                 },
                 // this will hold the shader info for each object
-                programInfo: transformShader(gl),
+                programInfo: transformShader(gl,0),
                 buffers: undefined,
                 centroid: calculateCentroid(inputTriangles[i].vertices),
                 materialColor: inputTriangles[i].material.diffuse,
                 parent: inputTriangles[i].parent
-                // TODO: Add more object specific state like material color, ...
             }
         );
 
         initBuffers(gl, state.objects[i], inputTriangles[i].vertices.flat(), inputTriangles[i].triangles.flat());
     }
+
+    for (var i = 0; i < inputUI.length; i++) {
+        state.uiObjects.push(
+            {
+                model: {
+                    position: vec3.fromValues(0.0, 0.0, 0.5),
+                    rotation: mat4.create(), // Identity matrix
+                    scale: vec3.fromValues(1.0, 1.0, 1.0),
+                },
+                programInfo: transformShader(gl,1),
+                buffers: undefined,
+                materialColor: inputUI[i].material.diffuse
+            }
+        );
+        initBuffers(gl, state.uiObjects[i], inputUI[i].vertices.flat(), inputUI[i].triangles.flat());
+    }
+
     document.addEventListener("pointerlockchange", lockChangeAlert, false);
     function lockChangeAlert() {
         if (document.pointerLockElement === canvas) {
@@ -145,8 +177,6 @@ function doDrawing(gl, canvas, inputTriangles) {
     }
 
     setupKeypresses(state);
-
-    //console.log(state)
 
     console.log("Starting rendering loop");
     startRendering(gl, state);
@@ -205,14 +235,30 @@ function drawScene(gl, deltaTime, state) {
     // Clear the color and depth buffer with specified clear colour.
     // This will replace everything that was in the previous frame with the clear colour.
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    
+    state.uiObjects.forEach((object) => {
+        // Choose to use our shader
+        gl.useProgram(object.programInfo.program);
+        {
+            gl.uniform3fv(object.programInfo.uniformLocations.materialColor, object.materialColor);
+        }
+        {
+            // Bind the buffer we want to draw
+            gl.bindVertexArray(object.buffers.vao);
+
+            // Draw the object
+            const offset = 0; // Number of elements to skip before starting
+            gl.drawElements(gl.TRIANGLES, object.buffers.numVertices, gl.UNSIGNED_SHORT, offset);
+        }
+    });
 
     state.objects.forEach((object) => {
         // Choose to use our shader
         gl.useProgram(object.programInfo.program);
 
-        // TODO Update uniforms with state variables values
+        // Update uniforms with state variables values
         {
-            // TODO setup projection matrix (this doesn't change)
+            // setup projection matrix (this doesn't change)
             var projectionMatrix = mat4.create();
             // use same params as in the lab5 example
             // fovy = 60deg, near=0.1, far=100
@@ -250,19 +296,30 @@ function drawScene(gl, deltaTime, state) {
             var modelMatrix = mat4.create();
             if (object.parent == "camera") {
                 var at = vec3.create();
+                var downOffset = vec3.create();
+                vec3.scale(downOffset, state.camera.up, 0.1);
+                var c = vec3.create();
+                vec3.subtract(c, state.camera.position, downOffset)
                 vec3.subtract(at, state.camera.center, state.camera.position);
                 vec3.normalize(at, at);
 
                 var scaled = vec3.create();
                 vec3.scale(scaled, at, 0.1)
-                vec3.add(object.model.position, state.camera.position, scaled);
+                object.model.scale = vec3.fromValues(30,30,90); 
+                vec3.add(object.model.position, c, scaled);
+
+                var d = vec3.create();
+                vec3.scale(d, state.camera.up, -1);
+                mat4.lookAt(object.model.rotation, vec3.fromValues(0,0,0), at, d);
             }
             mat4.translate(modelMatrix, modelMatrix, object.model.position);
 
             // move it to origin for rotation / scaling 
             mat4.translate(modelMatrix, modelMatrix, object.centroid);
 
+
             mat4.multiply(modelMatrix, modelMatrix, object.model.rotation);
+            
 
             mat4.scale(modelMatrix, modelMatrix, object.model.scale);
 
@@ -270,7 +327,6 @@ function drawScene(gl, deltaTime, state) {
             var negativeCentroid = vec3.create();
             vec3.scale(negativeCentroid, object.centroid, -1.0);
             mat4.translate(modelMatrix, modelMatrix, negativeCentroid);
-            
 
             // link to corresponding uniform object.programInfo.uniformLocations.[...]
             gl.uniformMatrix4fv(object.programInfo.uniformLocations.model, false, modelMatrix);
@@ -287,6 +343,7 @@ function drawScene(gl, deltaTime, state) {
             gl.drawElements(gl.TRIANGLES, object.buffers.numVertices, gl.UNSIGNED_SHORT, offset);
         }
     });
+
 }
 
 
@@ -361,7 +418,7 @@ function handleMovement(state) {
 /************************************
  * SHADER SETUP
  ************************************/
-function transformShader(gl) {
+function transformShader(gl, type) {
     // Vertex shader source code
     const vsSource =
         `#version 300 es
@@ -377,6 +434,15 @@ function transformShader(gl) {
         // Position needs to be a vec4 with w as 1.0
         // TODO apply transformation stored in uniforms 
         gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aPosition, 1.0);
+    }
+    `;
+    const vsSourceUI =
+    `#version 300 es
+    in vec3 aPosition;
+
+    void main() {
+        // Position needs to be a vec4 with w as 1.0
+        gl_Position = vec4(aPosition, 1.0);        
     }
     `;
 
@@ -399,7 +465,7 @@ function transformShader(gl) {
 
     // Create our shader program with our custom function
     const shaderProgram = initShaderProgram(gl, vsSource, fsSource);
-
+    const uishaderProgram = initShaderProgram(gl, vsSourceUI, fsSource);
     // Collect all the info needed to use the shader program.
     const programInfo = {
         // The actual shader program
@@ -419,17 +485,89 @@ function transformShader(gl) {
         },
     };
 
+    const programInfoUI = {
+        // The actual shader program
+        program: uishaderProgram,
+        // The attribute locations. WebGL will use there to hook up the buffers to the shader program.
+        // NOTE: it may be wise to check if these calls fail by seeing that the returned location is not -1.
+        attribLocations: {
+            vertexPosition: gl.getAttribLocation(uishaderProgram, 'aPosition')
+        },
+        uniformLocations: {
+            materialColor: gl.getUniformLocation(uishaderProgram, 'obColor')
+        }
+    };
     // Check to see if we found the locations of our uniforms and attributes
     // Typos are a common source of failure
-    // TODO add testes for all your uniform locations 
-    if (programInfo.attribLocations.vertexPosition === -1 ||
+    if (type == 0) {
+        if (programInfo.attribLocations.vertexPosition === -1 ||
         programInfo.uniformLocations.projection === -1 ||
         programInfo.uniformLocations.view === -1 ||
         programInfo.uniformLocations.model === -1 ||
         programInfo.uniformLocations.materialColor === -1) {
         printError('Shader Location Error', 'One or more of the uniform and attribute variables in the shaders could not be located');
     }
+        return programInfo;
+    } else if (type == 1) {
+        if (programInfo.attribLocations.vertexPosition === -1 ||
+        programInfo.attribLocations.vertexColour === -1) {
+        printError('Shader Location Error', 'One or more of the uniform and attribute variables in the shaders could not be located');
+    }
+        return programInfoUI;
+    }
+}
 
+function UIShader(gl) {
+
+    // Vertex shader source code
+    const vsSource =
+        `#version 300 es
+        in vec3 aPosition;
+
+        void main() {
+            // Position needs to be a vec4 with w as 1.0
+            gl_Position = vec4(aPosition, 1.0);        
+        }
+        `;
+
+    // Fragment shader source code
+    const fsSource =
+        `#version 300 es
+        precision highp float;
+
+        out vec4 fragColor;
+        uniform vec3 oColor;
+        
+        void main() {
+            // TODO: replace with corresponding color from uniform
+            fragColor = vec4(oColor[0], oColor[1], oColor[2], 1.0);
+        }
+        `;
+
+
+    // Create our shader program with our custom function
+    const shaderProgram = initShaderProgram(gl, vsSource, fsSource);
+
+    // Collect all the info needed to use the shader program.
+    const programInfo = {
+        // The actual shader program
+        program: shaderProgram,
+        // The attribute locations. WebGL will use there to hook up the buffers to the shader program.
+        // NOTE: it may be wise to check if these calls fail by seeing that the returned location is not -1.
+        attribLocations: {
+            vertexPosition: gl.getAttribLocation(shaderProgram, 'aPosition')
+        },
+        uniformLocations: {
+            materialColor: gl.getUniformLocation(shaderProgram, 'oColor')
+        }
+    };
+
+    // Check to see if we found the locations of our uniforms and attributes
+    // Typos are a common source of failure
+    if (programInfo.attribLocations.vertexPosition === -1 ||
+        programInfo.attribLocations.vertexColour === -1) {
+        printError('Shader Location Error', 'One or more of the uniform and attribute variables in the shaders could not be located');
+    }
     return programInfo;
 }
 
@@ -444,7 +582,6 @@ function initBuffers(gl, object, positionArray, indicesArray) {
 
     // We are using gl.UNSIGNED_SHORT to enumerate the indices
     const indices = new Uint16Array(indicesArray);
-
 
     // Allocate and assign a Vertex Array Object to our handle
     var vertexArrayObject = gl.createVertexArray();
