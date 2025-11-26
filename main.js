@@ -295,23 +295,32 @@ function drawScene(gl, deltaTime, state) {
 
             var modelMatrix = mat4.create();
             if (object.parent == "camera") {
+
                 var at = vec3.create();
-                var downOffset = vec3.create();
-                vec3.scale(downOffset, state.camera.up, 0.1);
-                var c = vec3.create();
-                vec3.subtract(c, state.camera.position, downOffset)
                 vec3.subtract(at, state.camera.center, state.camera.position);
                 vec3.normalize(at, at);
 
-                var scaled = vec3.create();
-                vec3.scale(scaled, at, 0.1)
-                object.model.scale = vec3.fromValues(30,30,90); 
-                vec3.add(object.model.position, c, scaled);
+                // right = at X up
+                var right = vec3.create();
+                vec3.cross(right, at, state.camera.up);
+
+                // up = right X at
+                var up = vec3.create();
+                vec3.cross(up, right, at);
+                vec3.normalize(up, up);
+
+                var downOffset = vec3.create();
+                vec3.scale(downOffset, up, 0.1);
+                vec3.subtract(object.model.position, state.camera.position, downOffset);
 
                 var d = vec3.create();
-                vec3.scale(d, state.camera.up, -1);
-                mat4.lookAt(object.model.rotation, vec3.fromValues(0,0,0), at, d);
+                var f = vec3.create();
+                vec3.scale(d, up, -1);
+                vec3.scale(f, at, -1);
+                mat4.lookAt(object.model.rotation, vec3.fromValues(0,0,0), f, d)
+                object.model.scale = vec3.fromValues(30,30,150); 
             }
+            
             mat4.translate(modelMatrix, modelMatrix, object.model.position);
 
             // move it to origin for rotation / scaling 
