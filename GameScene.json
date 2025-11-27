@@ -1,0 +1,2066 @@
+{
+    "objects": [
+        {
+            "name": "Floor",
+            "material": {
+                "diffuse": [
+                    1,
+                    1,
+                    1
+                ],
+                "ambient": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "specular": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "n": 12,
+                "alpha": 1,
+                "shaderType": 3,
+                "diffuseTexture": {
+                    "texture": {},
+                    "name": "images.jpg"
+                },
+                "normalTexture": {
+                    "texture": {},
+                    "name": "defaultNormal.jpg"
+                }
+            },
+            "type": "plane",
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                50,
+                1,
+                50
+            ],
+            "rotation": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+            ],
+            "rotationEulers": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "parent": null,
+            "model": null
+        },
+        {
+            "name": "Floor2",
+            "material": {
+                "diffuse": [
+                    1,
+                    0,
+                    0
+                ],
+                "ambient": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "specular": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "n": 12,
+                "alpha": 1,
+                "shaderType": 2,
+                "diffuseTexture": {
+                    "texture": {},
+                    "name": "images.jpg"
+                },
+                "normalTexture": {
+                    "texture": {},
+                    "name": "defaultNormal.jpg"
+                }
+            },
+            "type": "plane",
+            "position": [
+                0,
+                0,
+                25
+            ],
+            "scale": [
+                50,
+                1,
+                50
+            ],
+            "rotation": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+            ],
+            "rotationEulers": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "parent": null,
+            "model": null
+        },
+        {
+            "name": "Floor3",
+            "material": {
+                "diffuse": [
+                    0,
+                    0.250980406999588,
+                    1
+                ],
+                "ambient": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "specular": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "n": 12,
+                "alpha": 1,
+                "shaderType": 2,
+                "diffuseTexture": {
+                    "texture": {},
+                    "name": "images.jpg"
+                },
+                "normalTexture": {
+                    "texture": {},
+                    "name": "images.jpg"
+                }
+            },
+            "type": "plane",
+            "position": [
+                0,
+                0,
+                62
+            ],
+            "scale": [
+                50,
+                1,
+                100
+            ],
+            "rotation": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+            ],
+            "rotationEulers": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "parent": null,
+            "model": null
+        },
+        {
+            "name": "Wall1",
+            "material": {
+                "diffuse": [
+                    0.09803921729326248,
+                    0.3490196168422699,
+                    1
+                ],
+                "ambient": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "specular": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "n": 12,
+                "alpha": 1,
+                "shaderType": 3,
+                "diffuseTexture": {
+                    "texture": {},
+                    "name": "images.jpg"
+                },
+                "normalTexture": {
+                    "texture": {},
+                    "name": "Gold Wall.jpg"
+                }
+            },
+            "type": "plane",
+            "position": [
+                0,
+                3,
+                87
+            ],
+            "scale": [
+                50,
+                1,
+                15
+            ],
+            "rotation": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                3.422854177870249e-8,
+                0.9999999403953552,
+                0,
+                0,
+                -0.9999999403953552,
+                3.422854177870249e-8,
+                0,
+                0,
+                0,
+                0,
+                1
+            ],
+            "rotationEulers": {
+                "x": 90,
+                "y": 0,
+                "z": 0
+            },
+            "parent": null,
+            "model": null
+        },
+        {
+            "name": "Wall2",
+            "material": {
+                "diffuse": [
+                    0.5,
+                    0.5,
+                    0.5
+                ],
+                "ambient": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "specular": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "n": 12,
+                "alpha": 1,
+                "shaderType": 3,
+                "diffuseTexture": {
+                    "texture": {},
+                    "name": "Gold Wall.jpg"
+                },
+                "normalTexture": {
+                    "texture": {},
+                    "name": "Gold Wall.jpg"
+                }
+            },
+            "type": "plane",
+            "position": [
+                0,
+                3,
+                -12
+            ],
+            "scale": [
+                50,
+                1,
+                15
+            ],
+            "rotation": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                3.422854177870249e-8,
+                0.9999999403953552,
+                0,
+                0,
+                -0.9999999403953552,
+                3.422854177870249e-8,
+                0,
+                0,
+                0,
+                0,
+                1
+            ],
+            "rotationEulers": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "parent": null,
+            "model": null
+        },
+        {
+            "name": "Wall3",
+            "material": {
+                "diffuse": [
+                    1,
+                    1,
+                    1
+                ],
+                "ambient": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "specular": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "n": 12,
+                "alpha": 1,
+                "shaderType": 3,
+                "diffuseTexture": {
+                    "texture": {},
+                    "name": "Gold Wall.jpg"
+                },
+                "normalTexture": {
+                    "texture": {},
+                    "name": "Gold Wall.jpg"
+                }
+            },
+            "type": "plane",
+            "position": [
+                -12,
+                3,
+                0
+            ],
+            "scale": [
+                50,
+                1,
+                15
+            ],
+            "rotation": [
+                0,
+                0,
+                -1,
+                0,
+                -1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                0,
+                1
+            ],
+            "rotationEulers": {
+                "x": 0,
+                "y": 90,
+                "z": 90
+            },
+            "parent": null,
+            "model": null
+        },
+        {
+            "name": "Wall4",
+            "material": {
+                "diffuse": [
+                    1,
+                    1,
+                    1
+                ],
+                "ambient": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "specular": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "n": 12,
+                "alpha": 1,
+                "shaderType": 3,
+                "diffuseTexture": {
+                    "texture": {},
+                    "name": "Gold Wall.jpg"
+                },
+                "normalTexture": {
+                    "texture": {},
+                    "name": "Gold Wall.jpg"
+                }
+            },
+            "type": "plane",
+            "position": [
+                12,
+                3,
+                0
+            ],
+            "scale": [
+                50,
+                1,
+                15
+            ],
+            "rotation": [
+                0,
+                0,
+                -1,
+                0,
+                -1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                0,
+                1
+            ],
+            "rotationEulers": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "parent": null,
+            "model": null
+        },
+        {
+            "name": "Mazewall",
+            "material": {
+                "diffuse": [
+                    1,
+                    0,
+                    0
+                ],
+                "ambient": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "specular": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "n": 12,
+                "alpha": 1,
+                "shaderType": 3,
+                "diffuseTexture": {
+                    "texture": {},
+                    "name": "Gold Wall.jpg"
+                },
+                "normalTexture": {
+                    "texture": {},
+                    "name": "Gold Wall.jpg"
+                }
+            },
+            "type": "plane",
+            "position": [
+                5,
+                3,
+                37.5
+            ],
+            "scale": [
+                30,
+                1,
+                15
+            ],
+            "rotation": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                3.422854177870249e-8,
+                0.9999999403953552,
+                0,
+                0,
+                -0.9999999403953552,
+                3.422854177870249e-8,
+                0,
+                0,
+                0,
+                0,
+                1
+            ],
+            "rotationEulers": {
+                "x": 90,
+                "y": 0,
+                "z": 0
+            },
+            "parent": null,
+            "model": null
+        },
+        {
+            "name": "Mazewall2",
+            "material": {
+                "diffuse": [
+                    1,
+                    0,
+                    0
+                ],
+                "ambient": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "specular": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "n": 12,
+                "alpha": 1,
+                "shaderType": 3,
+                "diffuseTexture": {
+                    "texture": {},
+                    "name": "Gold Wall.jpg"
+                },
+                "normalTexture": {
+                    "texture": {},
+                    "name": "Gold Wall.jpg"
+                }
+            },
+            "type": "plane",
+            "position": [
+                -5,
+                3,
+                25.5
+            ],
+            "scale": [
+                30,
+                1,
+                15
+            ],
+            "rotation": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                3.422854177870249e-8,
+                0.9999999403953552,
+                0,
+                0,
+                -0.9999999403953552,
+                3.422854177870249e-8,
+                0,
+                0,
+                0,
+                0,
+                1
+            ],
+            "rotationEulers": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "parent": null,
+            "model": null
+        },
+        {
+            "name": "Mazewall3",
+            "material": {
+                "diffuse": [
+                    1,
+                    0,
+                    0
+                ],
+                "ambient": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "specular": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "n": 12,
+                "alpha": 1,
+                "shaderType": 3,
+                "diffuseTexture": {
+                    "texture": {},
+                    "name": "Gold Wall.jpg"
+                },
+                "normalTexture": {
+                    "texture": {},
+                    "name": "Gold Wall.jpg"
+                }
+            },
+            "type": "plane",
+            "position": [
+                5,
+                3,
+                12.5
+            ],
+            "scale": [
+                30,
+                1,
+                15
+            ],
+            "rotation": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                3.422854177870249e-8,
+                0.9999999403953552,
+                0,
+                0,
+                -0.9999999403953552,
+                3.422854177870249e-8,
+                0,
+                0,
+                0,
+                0,
+                1
+            ],
+            "rotationEulers": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "parent": null,
+            "model": null
+        },
+        {
+            "name": "Pillar",
+            "material": {
+                "diffuse": [
+                    1,
+                    1,
+                    1
+                ],
+                "ambient": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "specular": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "n": 12,
+                "alpha": 1,
+                "shaderType": 3,
+                "diffuseTexture": {
+                    "texture": {},
+                    "name": "marble-texture-background_38679-1053.png"
+                },
+                "normalTexture": {
+                    "texture": {},
+                    "name": "marble-texture-background_38679-1053.png"
+                }
+            },
+            "type": "mesh",
+            "position": [
+                -8,
+                0,
+                10
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rotation": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+            ],
+            "rotationEulers": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "parent": null,
+            "model": null,
+            "fileName": "pilar2.obj"
+        },
+        {
+            "name": "Pillar2",
+            "material": {
+                "diffuse": [
+                    1,
+                    1,
+                    1
+                ],
+                "ambient": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "specular": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "n": 12,
+                "alpha": 1,
+                "shaderType": 2,
+                "diffuseTexture": {
+                    "texture": {},
+                    "name": "marble-texture-background_38679-1053.png"
+                },
+                "normalTexture": {
+                    "texture": {},
+                    "name": "marble-texture-background_38679-1053.png"
+                }
+            },
+            "type": "mesh",
+            "position": [
+                -8,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rotation": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+            ],
+            "rotationEulers": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "parent": null,
+            "model": null,
+            "fileName": "pilar2.obj"
+        },
+        {
+            "name": "Pillar3",
+            "material": {
+                "diffuse": [
+                    1,
+                    1,
+                    1
+                ],
+                "ambient": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "specular": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "n": 12,
+                "alpha": 1,
+                "shaderType": 3,
+                "diffuseTexture": {
+                    "texture": {},
+                    "name": "marble-texture-background_38679-1053.png"
+                },
+                "normalTexture": {
+                    "texture": {},
+                    "name": "marble-texture-background_38679-1053.png"
+                }
+            },
+            "type": "mesh",
+            "position": [
+                8,
+                0,
+                -10
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rotation": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+            ],
+            "rotationEulers": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "parent": null,
+            "model": null,
+            "fileName": "pilar2.obj"
+        },
+        {
+            "name": "Pillar4",
+            "material": {
+                "diffuse": [
+                    1,
+                    1,
+                    1
+                ],
+                "ambient": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "specular": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "n": 12,
+                "alpha": 1,
+                "shaderType": 3,
+                "diffuseTexture": {
+                    "texture": {},
+                    "name": "marble-texture-background_38679-1053.png"
+                },
+                "normalTexture": {
+                    "texture": {},
+                    "name": "marble-texture-background_38679-1053.png"
+                }
+            },
+            "type": "mesh",
+            "position": [
+                8,
+                0,
+                10
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rotation": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+            ],
+            "rotationEulers": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "parent": null,
+            "model": null,
+            "fileName": "pilar2.obj"
+        },
+        {
+            "name": "Pillar5",
+            "material": {
+                "diffuse": [
+                    1,
+                    1,
+                    1
+                ],
+                "ambient": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "specular": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "n": 12,
+                "alpha": 1,
+                "shaderType": 3,
+                "diffuseTexture": {
+                    "texture": {},
+                    "name": "marble-texture-background_38679-1053.png"
+                },
+                "normalTexture": {
+                    "texture": {},
+                    "name": "marble-texture-background_38679-1053.png"
+                }
+            },
+            "type": "mesh",
+            "position": [
+                -8,
+                0,
+                -10
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rotation": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+            ],
+            "rotationEulers": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "parent": null,
+            "model": null,
+            "fileName": "pilar2.obj"
+        },
+        {
+            "name": "Pillar6",
+            "material": {
+                "diffuse": [
+                    1,
+                    1,
+                    1
+                ],
+                "ambient": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "specular": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "n": 12,
+                "alpha": 1,
+                "shaderType": 2,
+                "diffuseTexture": {
+                    "texture": {},
+                    "name": "marble-texture-background_38679-1053.png"
+                },
+                "normalTexture": {
+                    "texture": {},
+                    "name": "marble-texture-background_38679-1053.png"
+                }
+            },
+            "type": "mesh",
+            "position": [
+                8,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rotation": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+            ],
+            "rotationEulers": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "parent": null,
+            "model": null,
+            "fileName": "pilar2.obj"
+        },
+        {
+            "name": "Pillar7",
+            "material": {
+                "diffuse": [
+                    1,
+                    1,
+                    1
+                ],
+                "ambient": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "specular": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "n": 12,
+                "alpha": 1,
+                "shaderType": 2,
+                "diffuseTexture": {
+                    "texture": {},
+                    "name": "marble-texture-background_38679-1053.png"
+                },
+                "normalTexture": {
+                    "texture": {},
+                    "name": "marble-texture-background_38679-1053.png"
+                }
+            },
+            "type": "mesh",
+            "position": [
+                8,
+                0,
+                20
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rotation": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+            ],
+            "rotationEulers": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "parent": null,
+            "model": null,
+            "fileName": "pilar2.obj"
+        },
+        {
+            "name": "Pillar8",
+            "material": {
+                "diffuse": [
+                    1,
+                    1,
+                    1
+                ],
+                "ambient": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "specular": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "n": 12,
+                "alpha": 1,
+                "shaderType": 2,
+                "diffuseTexture": {
+                    "texture": {},
+                    "name": "marble-texture-background_38679-1053.png"
+                },
+                "normalTexture": {
+                    "texture": {},
+                    "name": "marble-texture-background_38679-1053.png"
+                }
+            },
+            "type": "mesh",
+            "position": [
+                -8,
+                0,
+                32
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rotation": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+            ],
+            "rotationEulers": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "parent": null,
+            "model": null,
+            "fileName": "pilar2.obj"
+        },
+        {
+            "name": "Wall5",
+            "material": {
+                "diffuse": [
+                    1,
+                    0,
+                    0
+                ],
+                "ambient": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "specular": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "n": 12,
+                "alpha": 1,
+                "shaderType": 3,
+                "diffuseTexture": {
+                    "texture": {},
+                    "name": "Gold Wall.jpg"
+                },
+                "normalTexture": {
+                    "texture": {},
+                    "name": "Gold Wall.jpg"
+                }
+            },
+            "type": "plane",
+            "position": [
+                12,
+                3,
+                25
+            ],
+            "scale": [
+                50,
+                1,
+                15
+            ],
+            "rotation": [
+                0,
+                0,
+                -1,
+                0,
+                -1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                0,
+                1
+            ],
+            "rotationEulers": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "parent": null,
+            "model": null
+        },
+        {
+            "name": "Wall6",
+            "material": {
+                "diffuse": [
+                    1,
+                    0,
+                    0
+                ],
+                "ambient": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "specular": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "n": 12,
+                "alpha": 1,
+                "shaderType": 3,
+                "diffuseTexture": {
+                    "texture": {},
+                    "name": "Gold Wall.jpg"
+                },
+                "normalTexture": {
+                    "texture": {},
+                    "name": "Gold Wall.jpg"
+                }
+            },
+            "type": "plane",
+            "position": [
+                -12,
+                3,
+                25
+            ],
+            "scale": [
+                50,
+                1,
+                15
+            ],
+            "rotation": [
+                0,
+                0,
+                -1,
+                0,
+                -1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                0,
+                1
+            ],
+            "rotationEulers": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "parent": null,
+            "model": null
+        },
+        {
+            "name": "Wall1-copy-copy-copy-copy-copy-copy",
+            "material": {
+                "diffuse": [
+                    0,
+                    0.2980392277240753,
+                    1
+                ],
+                "ambient": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "specular": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "n": 12,
+                "alpha": 1,
+                "shaderType": 3,
+                "diffuseTexture": {
+                    "texture": {},
+                    "name": "Gold Wall.jpg"
+                },
+                "normalTexture": {
+                    "texture": {},
+                    "name": "Gold Wall.jpg"
+                }
+            },
+            "type": "plane",
+            "position": [
+                -12,
+                3,
+                62
+            ],
+            "scale": [
+                100,
+                1,
+                15
+            ],
+            "rotation": [
+                0,
+                0,
+                -1,
+                0,
+                -1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                0,
+                1
+            ],
+            "rotationEulers": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "parent": null,
+            "model": null
+        },
+        {
+            "name": "Wall1-copy-copy-copy-copy-copy-copy-copy",
+            "material": {
+                "diffuse": [
+                    0,
+                    0.0784313753247261,
+                    0.16470588743686676
+                ],
+                "ambient": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "specular": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "n": 12,
+                "alpha": 1,
+                "shaderType": 3,
+                "diffuseTexture": {
+                    "texture": {},
+                    "name": "Gold Wall.jpg"
+                },
+                "normalTexture": {
+                    "texture": {},
+                    "name": "Gold Wall.jpg"
+                }
+            },
+            "type": "plane",
+            "position": [
+                12,
+                3,
+                62
+            ],
+            "scale": [
+                100,
+                1,
+                15
+            ],
+            "rotation": [
+                0,
+                0,
+                -1,
+                0,
+                -1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                0,
+                1
+            ],
+            "rotationEulers": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "parent": null,
+            "model": null
+        },
+        {
+            "name": "Pillar9",
+            "material": {
+                "diffuse": [
+                    1,
+                    1,
+                    1
+                ],
+                "ambient": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "specular": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "n": 12,
+                "alpha": 1,
+                "shaderType": 3,
+                "diffuseTexture": {
+                    "texture": {},
+                    "name": "marble-texture-background_38679-1053.png"
+                },
+                "normalTexture": {
+                    "texture": {},
+                    "name": "marble-texture-background_38679-1053.png"
+                }
+            },
+            "type": "mesh",
+            "position": [
+                -8,
+                0,
+                50
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rotation": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+            ],
+            "rotationEulers": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "parent": null,
+            "model": null,
+            "fileName": "pilar2.obj"
+        },
+        {
+            "name": "Pillar10",
+            "material": {
+                "diffuse": [
+                    1,
+                    1,
+                    1
+                ],
+                "ambient": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "specular": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "n": 12,
+                "alpha": 1,
+                "shaderType": 2,
+                "diffuseTexture": {
+                    "texture": {},
+                    "name": "marble-texture-background_38679-1053.png"
+                },
+                "normalTexture": {
+                    "texture": {},
+                    "name": "marble-texture-background_38679-1053.png"
+                }
+            },
+            "type": "mesh",
+            "position": [
+                -8,
+                0,
+                65
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rotation": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+            ],
+            "rotationEulers": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "parent": null,
+            "model": null,
+            "fileName": "pilar2.obj"
+        },
+        {
+            "name": "Pillar11copy",
+            "material": {
+                "diffuse": [
+                    1,
+                    1,
+                    1
+                ],
+                "ambient": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "specular": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "n": 12,
+                "alpha": 1,
+                "shaderType": 3,
+                "diffuseTexture": {
+                    "texture": {},
+                    "name": "marble-texture-background_38679-1053.png"
+                },
+                "normalTexture": {
+                    "texture": {},
+                    "name": "marble-texture-background_38679-1053.png"
+                }
+            },
+            "type": "mesh",
+            "position": [
+                -8,
+                0,
+                80
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rotation": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+            ],
+            "rotationEulers": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "parent": null,
+            "model": null,
+            "fileName": "pilar2.obj"
+        },
+        {
+            "name": "Pillar12",
+            "material": {
+                "diffuse": [
+                    1,
+                    1,
+                    1
+                ],
+                "ambient": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "specular": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "n": 12,
+                "alpha": 1,
+                "shaderType": 3,
+                "diffuseTexture": {
+                    "texture": {},
+                    "name": "marble-texture-background_38679-1053.png"
+                },
+                "normalTexture": {
+                    "texture": {},
+                    "name": "marble-texture-background_38679-1053.png"
+                }
+            },
+            "type": "mesh",
+            "position": [
+                8,
+                0,
+                50
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rotation": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+            ],
+            "rotationEulers": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "parent": null,
+            "model": null,
+            "fileName": "pilar2.obj"
+        },
+        {
+            "name": "Pillar13copy",
+            "material": {
+                "diffuse": [
+                    1,
+                    1,
+                    1
+                ],
+                "ambient": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "specular": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "n": 12,
+                "alpha": 1,
+                "shaderType": 3,
+                "diffuseTexture": {
+                    "texture": {},
+                    "name": "marble-texture-background_38679-1053.png"
+                },
+                "normalTexture": {
+                    "texture": {},
+                    "name": "marble-texture-background_38679-1053.png"
+                }
+            },
+            "type": "mesh",
+            "position": [
+                8,
+                0,
+                65
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rotation": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+            ],
+            "rotationEulers": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "parent": null,
+            "model": null,
+            "fileName": "pilar2.obj"
+        },
+        {
+            "name": "Pillar14",
+            "material": {
+                "diffuse": [
+                    1,
+                    1,
+                    1
+                ],
+                "ambient": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "specular": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "n": 12,
+                "alpha": 1,
+                "shaderType": 3,
+                "diffuseTexture": {
+                    "texture": {},
+                    "name": "marble-texture-background_38679-1053.png"
+                },
+                "normalTexture": {
+                    "texture": {},
+                    "name": "marble-texture-background_38679-1053.png"
+                }
+            },
+            "type": "mesh",
+            "position": [
+                8,
+                0,
+                80
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rotation": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+            ],
+            "rotationEulers": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "parent": null,
+            "model": null,
+            "fileName": "pilar2.obj"
+        }
+    ],
+    "pointLights": [
+        {
+            "name": "light1",
+            "colour": [
+                1,
+                1,
+                1
+            ],
+            "position": [
+                0,
+                10,
+                34
+            ],
+            "strength": 5,
+            "quadratic": 0.032,
+            "linear": 0.09,
+            "constant": 1,
+            "nearPlane": 0.1,
+            "farPlane": 1000,
+            "shadow": false
+        },
+        {
+            "name": "light2",
+            "colour": [
+                1,
+                1,
+                1
+            ],
+            "position": [
+                0,
+                10,
+                0
+            ],
+            "strength": 10,
+            "quadratic": 0.032,
+            "linear": 0.09,
+            "constant": 1,
+            "nearPlane": 0.1,
+            "farPlane": 1000,
+            "shadow": false
+        },
+        {
+            "name": "light3",
+            "colour": [
+                1,
+                1,
+                1
+            ],
+            "position": [
+                0,
+                10,
+                70
+            ],
+            "strength": 10,
+            "quadratic": 0.032,
+            "linear": 0.09,
+            "constant": 1,
+            "nearPlane": 0.1,
+            "farPlane": 1000,
+            "shadow": false
+        },
+        {
+            "name": "light4",
+            "colour": [
+                1,
+                1,
+                1
+            ],
+            "position": [
+                0,
+                10,
+                17
+            ],
+            "strength": 5,
+            "quadratic": 0.032,
+            "linear": 0.09,
+            "constant": 1,
+            "nearPlane": 0.1,
+            "farPlane": 1000,
+            "shadow": false
+        },
+        {
+            "name": "light5",
+            "colour": [
+                1,
+                1,
+                1
+            ],
+            "position": [
+                0,
+                10,
+                50
+            ],
+            "strength": 15,
+            "quadratic": 0.032,
+            "linear": 0.09,
+            "constant": 1,
+            "nearPlane": 0.1,
+            "farPlane": 1000,
+            "shadow": false
+        },
+        {
+            "name": "light6",
+            "colour": [
+                1,
+                1,
+                1
+            ],
+            "position": [
+                0,
+                10,
+                85
+            ],
+            "strength": 15,
+            "quadratic": 0.032,
+            "linear": 0.09,
+            "constant": 1,
+            "nearPlane": 0.1,
+            "farPlane": 1000,
+            "shadow": false
+        }
+    ],
+    "skyBoxOn": false,
+    "skyBoxPath": "defaultSkybox",
+    "sceneSettings": {
+        "backgroundColor": [
+            1,
+            1,
+            1
+        ]
+    },
+    "camera": {
+        "name": "Camera",
+        "position": [
+            -4.370461463928223,
+            22.534006118774414,
+            36.570777893066406
+        ],
+        "front": [
+            0.14061081409454346,
+            -0.8518455624580383,
+            0.5045669078826904
+        ],
+        "up": [
+            0,
+            1,
+            0
+        ],
+        "yaw": 90,
+        "pitch": 0,
+        "roll": 0,
+        "viewMatrix": {
+            "0": -0.9633100628852844,
+            "1": 0.22867915034294128,
+            "2": -0.14061255753040314,
+            "3": 0,
+            "4": -0.0000015104185422387673,
+            "5": 0.5237833261489868,
+            "6": 0.8518561124801636,
+            "7": 0,
+            "8": 0.2684512138366699,
+            "9": 0.8205879926681519,
+            "10": -0.5045731663703918,
+            "11": 0,
+            "12": -14.027544975280762,
+            "13": -40.813045501708984,
+            "14": -1.357638955116272,
+            "15": 1
+        },
+        "moveSpeed": 5,
+        "sensitivity": 0.009
+    }
+}
