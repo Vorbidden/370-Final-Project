@@ -87,6 +87,7 @@ function doDrawing(gl, canvas, inputTriangles, inputUI) {
         keysPressed: {}
     };
 
+    // Everything in the 3D plane
     for (var i = 0; i < inputTriangles.length; i++) {
         state.objects.push(
             {
@@ -108,6 +109,7 @@ function doDrawing(gl, canvas, inputTriangles, inputUI) {
         initBuffers(gl, state.objects[i], inputTriangles[i].vertices.flat(), inputTriangles[i].triangles.flat());
     }
 
+    // Everything in UI
     for (var i = 0; i < inputUI.length; i++) {
         state.uiObjects.push(
             {
@@ -124,6 +126,9 @@ function doDrawing(gl, canvas, inputTriangles, inputUI) {
         initBuffers(gl, state.uiObjects[i], inputUI[i].vertices.flat(), inputUI[i].triangles.flat());
     }
 
+/************************************
+ * MOUSE STUFF (I THINK I JUST COPY AND PASTED THIS FROM ONLINE, NO IDEA HOW IT WORKS JSUT DONT TOUCH IT)
+ ************************************/
     document.addEventListener("pointerlockchange", lockChangeAlert, false);
     function lockChangeAlert() {
         if (document.pointerLockElement === canvas) {
@@ -175,6 +180,7 @@ function doDrawing(gl, canvas, inputTriangles, inputUI) {
             vec3.normalize(state.camera.up, state.camera.up);
         }
     }
+// END OF MOUSE STUFF
 
     setupKeypresses(state);
 
@@ -271,7 +277,7 @@ function drawScene(gl, deltaTime, state) {
             // link to corresponding uniform object.programInfo.uniformLocations.[...]
 
             gl.uniformMatrix4fv(object.programInfo.uniformLocations.projection, false, projectionMatrix);
-            // TODO update view matrix with state.camera
+
             // use mat4.lookAt to generate the view matrix
             var viewMatrix = mat4.create();
             mat4.lookAt(
@@ -284,15 +290,7 @@ function drawScene(gl, deltaTime, state) {
             // link to corresponding uniform object.programInfo.uniformLocations.[...]
             gl.uniformMatrix4fv(object.programInfo.uniformLocations.view, false, viewMatrix);
 
-            // TODO Update model transform
-            // apply modeling transformations in correct order using
-            // object.model.position, object.model.rotation, object.model.scale
-            // for correct rotation wr centroid here is the order of operations 
-            // in reverese order of how they should be applied 
-            // translation (object.model.position), translation(centroid), rotation, scale, translation(negative certoid)
-
             // tie an object to the camera
-
             var modelMatrix = mat4.create();
             if (object.parent == "camera") {
 
@@ -337,9 +335,10 @@ function drawScene(gl, deltaTime, state) {
             vec3.scale(negativeCentroid, object.centroid, -1.0);
             mat4.translate(modelMatrix, modelMatrix, negativeCentroid);
 
-            // link to corresponding uniform object.programInfo.uniformLocations.[...]
+            // link to corresponding uniform object.programInfo.uniformLocations
             gl.uniformMatrix4fv(object.programInfo.uniformLocations.model, false, modelMatrix);
-            // TODO Update other uniforms like colors
+
+            // Color
             gl.uniform3fv(object.programInfo.uniformLocations.materialColor, object.materialColor);
         }
         // Draw 
@@ -433,18 +432,16 @@ function transformShader(gl, type) {
         `#version 300 es
     in vec3 aPosition;
 
-    // TODO add uniforms for projection, view and model matrices
-    // type uniform mat4 
     uniform mat4 uProjectionMatrix;
     uniform mat4 uViewMatrix;
     uniform mat4 uModelMatrix;
  
     void main() {
-        // Position needs to be a vec4 with w as 1.0
-        // TODO apply transformation stored in uniforms 
         gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aPosition, 1.0);
     }
     `;
+
+    // UI vertex shader
     const vsSourceUI =
     `#version 300 es
     in vec3 aPosition;
@@ -455,7 +452,8 @@ function transformShader(gl, type) {
     }
     `;
 
-    // Fragment shader source code
+    // Fragment shader source code (UI uses this too!)
+    // MIGHT CHANGE WITH TEXTURE! (Remember to always check if texture exists!)
     const fsSource =
         `#version 300 es
     precision highp float;
@@ -472,33 +470,28 @@ function transformShader(gl, type) {
     }
     `;
 
-    // Create our shader program with our custom function
     const shaderProgram = initShaderProgram(gl, vsSource, fsSource);
     const uishaderProgram = initShaderProgram(gl, vsSourceUI, fsSource);
-    // Collect all the info needed to use the shader program.
+    
+    // World objects programinfo
     const programInfo = {
-        // The actual shader program
         program: shaderProgram,
-        // The attribute locations. WebGL will use there to hook up the buffers to the shader program.
-        // NOTE: it may be wise to check if these calls fail by seeing that the returned location is not -1.
+
         attribLocations: {
             vertexPosition: gl.getAttribLocation(shaderProgram, 'aPosition'),
         },
         uniformLocations: {
-            // TODO: add the locations for the 3 uniforms related to projection, view, modeling transforms
             projection: gl.getUniformLocation(shaderProgram, 'uProjectionMatrix'),
             view: gl.getUniformLocation(shaderProgram, 'uViewMatrix'),
             model: gl.getUniformLocation(shaderProgram, 'uModelMatrix'),
-            // TODO: Add location to additional uniforms here (ex related to material color)
             materialColor: gl.getUniformLocation(shaderProgram, 'obColor')
         },
     };
 
+    // UI uses a different programinfo because it doesn't have coordinates in the 3D plane
     const programInfoUI = {
-        // The actual shader program
         program: uishaderProgram,
-        // The attribute locations. WebGL will use there to hook up the buffers to the shader program.
-        // NOTE: it may be wise to check if these calls fail by seeing that the returned location is not -1.
+        
         attribLocations: {
             vertexPosition: gl.getAttribLocation(uishaderProgram, 'aPosition')
         },
@@ -506,6 +499,7 @@ function transformShader(gl, type) {
             materialColor: gl.getUniformLocation(uishaderProgram, 'obColor')
         }
     };
+
     // Check to see if we found the locations of our uniforms and attributes
     // Typos are a common source of failure
     if (type == 0) {
@@ -519,65 +513,11 @@ function transformShader(gl, type) {
         return programInfo;
     } else if (type == 1) {
         if (programInfo.attribLocations.vertexPosition === -1 ||
-        programInfo.attribLocations.vertexColour === -1) {
+        programInfo.uniformLocations.materialColor === -1) {
         printError('Shader Location Error', 'One or more of the uniform and attribute variables in the shaders could not be located');
     }
         return programInfoUI;
     }
-}
-
-function UIShader(gl) {
-
-    // Vertex shader source code
-    const vsSource =
-        `#version 300 es
-        in vec3 aPosition;
-
-        void main() {
-            // Position needs to be a vec4 with w as 1.0
-            gl_Position = vec4(aPosition, 1.0);        
-        }
-        `;
-
-    // Fragment shader source code
-    const fsSource =
-        `#version 300 es
-        precision highp float;
-
-        out vec4 fragColor;
-        uniform vec3 oColor;
-        
-        void main() {
-            // TODO: replace with corresponding color from uniform
-            fragColor = vec4(oColor[0], oColor[1], oColor[2], 1.0);
-        }
-        `;
-
-
-    // Create our shader program with our custom function
-    const shaderProgram = initShaderProgram(gl, vsSource, fsSource);
-
-    // Collect all the info needed to use the shader program.
-    const programInfo = {
-        // The actual shader program
-        program: shaderProgram,
-        // The attribute locations. WebGL will use there to hook up the buffers to the shader program.
-        // NOTE: it may be wise to check if these calls fail by seeing that the returned location is not -1.
-        attribLocations: {
-            vertexPosition: gl.getAttribLocation(shaderProgram, 'aPosition')
-        },
-        uniformLocations: {
-            materialColor: gl.getUniformLocation(shaderProgram, 'oColor')
-        }
-    };
-
-    // Check to see if we found the locations of our uniforms and attributes
-    // Typos are a common source of failure
-    if (programInfo.attribLocations.vertexPosition === -1 ||
-        programInfo.attribLocations.vertexColour === -1) {
-        printError('Shader Location Error', 'One or more of the uniform and attribute variables in the shaders could not be located');
-    }
-    return programInfo;
 }
 
 /************************************
