@@ -101,7 +101,7 @@ class UIElement {
     //create vertices, normal and indicies arrays
     const positions = new Float32Array(this.model.vertices.flat());
     //const normals = new Float32Array(this.model.normals.flat());
-    const indices = this.model.triangles ? new Uint16Array(this.model.triangles) : null;
+    const indices = this.model.triangles ? new Uint16Array(this.model.triangles.flat()) : null;
     // const textureCoords = new Float32Array(this.model.uvs);
     // const bitangents = new Float32Array(this.model.bitangents);
 
