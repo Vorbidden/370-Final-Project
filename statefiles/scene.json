@@ -1,0 +1,451 @@
+{
+    "objects": [
+        {
+            "name": "cube1",
+            "material": {
+                "diffuse": [
+                    0.5,
+                    0.5,
+                    0.5
+                ],
+                "ambient": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "specular": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "n": 0.2,
+                "alpha": 1,
+                "shaderType": 1,
+                "diffuseTexture": {
+                    "texture": {},
+                    "name": "craneIconTealInverse.png"
+                },
+                "normalTexture": {
+                    "texture": {},
+                    "name": "defaultNormal.jpg"
+                }
+            },
+            "type": "cube",
+            "position": [
+                1,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rotation": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+            ],
+            "parent": null,
+            "model": null
+        },
+        {
+            "name": "cube2",
+            "material": {
+                "diffuse": [
+                    0.5,
+                    0.5,
+                    0.5
+                ],
+                "ambient": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "specular": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "n": 0.2,
+                "alpha": 1,
+                "shaderType": 1,
+                "diffuseTexture": {
+                    "texture": {},
+                    "name": "craneIconTealInverse.png"
+                },
+                "normalTexture": {
+                    "texture": {},
+                    "name": "defaultNormal.jpg"
+                }
+            },
+            "type": "cube",
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rotation": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+            ],
+            "parent": null,
+            "model": null
+        },
+        {
+            "name": "plane",
+            "material": {
+                "diffuse": [
+                    0.5,
+                    0.5,
+                    0.5
+                ],
+                "ambient": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "specular": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "n": 0.2,
+                "alpha": 1,
+                "shaderType": 1,
+                "diffuseTexture": {
+                    "texture": {},
+                    "name": "craneIconTealInverse.png"
+                },
+                "normalTexture": {
+                    "texture": {},
+                    "name": "defaultNormal.jpg"
+                }
+            },
+            "type": "plane",
+            "position": [
+                0.5,
+                -1,
+                0
+            ],
+            "scale": [
+                10,
+                1,
+                10
+            ],
+            "rotation": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+            ],
+            "parent": null,
+            "model": null
+        },
+        {
+            "name": "bunny",
+            "material": {
+                "diffuse": [
+                    0.09019608050584793,
+                    0.7803921699523926,
+                    0
+                ],
+                "ambient": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "specular": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "n": 0.2,
+                "alpha": 1,
+                "shaderType": 1,
+                "diffuseTexture": {
+                    "texture": {},
+                    "name": "craneIconTealInverse.png"
+                },
+                "normalTexture": {
+                    "texture": {},
+                    "name": "defaultNormal.jpg"
+                }
+            },
+            "type": "mesh",
+            "position": [
+                -1,
+                0,
+                -3
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rotation": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+            ],
+            "parent": null,
+            "model": null,
+            "fileName": "bunny.obj"
+        },
+        {
+            "name": "bunny-copy",
+            "material": {
+                "diffuse": [
+                    0.09019608050584793,
+                    0.7803921699523926,
+                    0
+                ],
+                "ambient": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "specular": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "n": 0.2,
+                "alpha": 1,
+                "shaderType": 1,
+                "diffuseTexture": {
+                    "texture": {},
+                    "name": "craneIconTealInverse.png"
+                },
+                "normalTexture": {
+                    "texture": {},
+                    "name": "defaultNormal.jpg"
+                }
+            },
+            "type": "mesh",
+            "position": [
+                1,
+                0,
+                -3
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rotation": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+            ],
+            "parent": null,
+            "model": null,
+            "fileName": "bunny.obj"
+        },
+        {
+            "name": "bunny-copy-copy",
+            "material": {
+                "diffuse": [
+                    0.09019608050584793,
+                    0.7803921699523926,
+                    0
+                ],
+                "ambient": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "specular": [
+                    0.10000000149011612,
+                    0.10000000149011612,
+                    0.10000000149011612
+                ],
+                "n": 0.2,
+                "alpha": 1,
+                "shaderType": 1,
+                "diffuseTexture": {
+                    "texture": {},
+                    "name": "craneIconTealInverse.png"
+                },
+                "normalTexture": {
+                    "texture": {},
+                    "name": "defaultNormal.jpg"
+                }
+            },
+            "type": "mesh",
+            "position": [
+                3,
+                0,
+                -3
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "rotation": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+            ],
+            "parent": null,
+            "model": null,
+            "fileName": "bunny.obj"
+        }
+    ],
+    "pointLights": [
+        {
+            "name": "test-light-0",
+            "colour": [
+                0.5,
+                0.5,
+                0.5
+            ],
+            "position": [
+                0,
+                4,
+                0
+            ],
+            "strength": 5,
+            "quadratic": 0.032,
+            "linear": 0.09,
+            "constant": 1,
+            "nearPlane": 0.1,
+            "farPlane": 1000,
+            "shadow": false
+        }
+    ],
+    "skyBoxOn": false,
+    "skyBoxPath": "defaultSkybox",
+    "sceneSettings": {
+        "backgroundColor": {
+            "0": 0.2,
+            "1": 0.2,
+            "2": 0.2
+        }
+    },
+    "camera": {
+        "name": "Camera",
+        "position": [
+            0.8660423755645752,
+            1.3078036308288574,
+            4.345546245574951
+        ],
+        "front": [
+            -0.01745932549238205,
+            -0.24304765462875366,
+            -0.9698572158813477
+        ],
+        "up": [
+            0,
+            1,
+            0
+        ],
+        "yaw": 90,
+        "pitch": 0,
+        "roll": 0,
+        "viewMatrix": {
+            "0": 0.9998379945755005,
+            "1": -0.00437462143599987,
+            "2": 0.01745932549238205,
+            "3": 0,
+            "4": -2.5919912882699236e-9,
+            "5": 0.9700143337249756,
+            "6": 0.24304765462875366,
+            "7": 0,
+            "8": -0.017999038100242615,
+            "9": -0.24300828576087952,
+            "10": 0.9698572158813477,
+            "11": 0,
+            "12": -0.7876864075660706,
+            "13": -0.208795964717865,
+            "14": -4.5475382804870605,
+            "15": 1
+        },
+        "moveSpeed": 5,
+        "sensitivity": 0.009
+    }
+}

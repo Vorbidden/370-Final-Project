@@ -1,13 +1,15 @@
-import http.server
-import socketserver
+import webbrowser
+from sys import exit
+from livereload import Server
 
 PORT = 8000
 
-def main():
-    handler = http.server.SimpleHTTPRequestHandler
-    with socketserver.TCPServer(("", PORT), handler) as httpd:
-        print("Starting server on port: " + str(PORT))
-        httpd.serve_forever()
+try:
+    webbrowser.open_new_tab(f'http://localhost:{PORT}')
+    server = Server()
+    server.watch('*.html')
+    server.watch('js/*.js')
+    server.serve(root='.', port=PORT) 
 
-if __name__ == "__main__":
-    main()
+except KeyboardInterrupt:
+    exit()
