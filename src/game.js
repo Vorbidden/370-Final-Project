@@ -46,12 +46,12 @@ class Game {
     // Set up our own superior input system (allows for holding)
     document.addEventListener('keydown', (event) => {
         if (!event.repeat) {
-            state.keysPressed[event.key] = true;
+            state.keysPressed[event.key.toLowerCase()] = true;
         }
     });
 
     document.addEventListener('keyup', (event) => {
-        delete state.keysPressed[event.key];
+        delete state.keysPressed[event.key.toLowerCase()];
     });
 
     // this just prevents the context menu from popping up when you right click

@@ -2,6 +2,9 @@ var state = {};
 var game;
 var sceneFile = "gamescene.json"; // can change this to be the name of your scene
 var uiFile = "ui1.json"; // can change this to be the name of your scene
+const WALK_SPEED = 0.01;
+const RUN_SPEED = 0.05;
+var currentSpeed = 0.01;
 
 // This function loads on window load, uses async functions to load the scene then try to render it
 window.onload = async () => {
@@ -276,6 +279,11 @@ function startRendering(gl, state) {
 function handleMovement(state) {
     let camFront = vec3.fromValues(0, 0, 0);
     vec3.add(camFront, state.camera.position, state.camera.front);
+    if (state.keysPressed["shift"]) {
+      currentSpeed = RUN_SPEED;
+    } else {
+      currentSpeed = WALK_SPEED;
+    }
     if (state.keysPressed["a"]) {
       // Move left
       // at = normalize(center - pos)
@@ -289,8 +297,7 @@ function handleMovement(state) {
       right[1] = 0;
       vec3.normalize(right, right);
 
-      //vec3.add(sta, camFront, vec3.fromValues(-0.01*right[0], 0.0, -0.01*right[2]));
-      vec3.add(state.camera.position, state.camera.position, vec3.fromValues(-0.01*right[0], 0.0, -0.01*right[2]));
+      vec3.add(state.camera.position, state.camera.position, vec3.fromValues(-currentSpeed*right[0], 0.0, -currentSpeed*right[2]));
   }
   if (state.keysPressed["d"]) {
       // Move right
@@ -305,8 +312,7 @@ function handleMovement(state) {
       right[1] = 0;
       vec3.normalize(right, right);
 
-      //vec3.add(camFront, camFront, vec3.fromValues(0.01*right[0], 0.0, 0.01*right[2]));
-      vec3.add(state.camera.position, state.camera.position, vec3.fromValues(0.01*right[0], 0.0, 0.01*right[2]));
+      vec3.add(state.camera.position, state.camera.position, vec3.fromValues(currentSpeed*right[0], 0.0, currentSpeed*right[2]));
   }
   if (state.keysPressed["w"]) {
       // Move forwards
@@ -314,8 +320,8 @@ function handleMovement(state) {
       vec3.subtract(at, camFront, state.camera.position);
       at[1] = 0;
       vec3.normalize(at, at);
-      //vec3.add(camFront, camFront, vec3.fromValues(0.01*at[0], 0.0, 0.01*at[2]));
-      vec3.add(state.camera.position, state.camera.position, vec3.fromValues(0.01*at[0], 0.0, 0.01*at[2]));
+
+      vec3.add(state.camera.position, state.camera.position, vec3.fromValues(currentSpeed*at[0], 0.0, currentSpeed*at[2]));
   }
   if (state.keysPressed["s"]) {
       // Move backwards
@@ -323,8 +329,8 @@ function handleMovement(state) {
       vec3.subtract(at, camFront, state.camera.position);
       at[1] = 0;
       vec3.normalize(at, at);
-      //vec3.add(camFront, camFront, vec3.fromValues(-0.01*at[0], 0.0, -0.01*at[2]));
-      vec3.add(state.camera.position, state.camera.position, vec3.fromValues(-0.01*at[0], 0.0, -0.01*at[2]));
+
+      vec3.add(state.camera.position, state.camera.position, vec3.fromValues(-currentSpeed*at[0], 0.0, -currentSpeed*at[2]));
   }
 }
 /**
