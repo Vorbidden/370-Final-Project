@@ -1,6 +1,6 @@
 var state = {};
 var game;
-var sceneFile = "scene.json"; // can change this to be the name of your scene
+var sceneFile = "gamescene.json"; // can change this to be the name of your scene
 var uiFile = "ui1.json"; // can change this to be the name of your scene
 
 // This function loads on window load, uses async functions to load the scene then try to render it
