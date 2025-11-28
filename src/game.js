@@ -59,6 +59,14 @@ class Game {
       e.preventDefault();
     }, false);
 
+    document.addEventListener('mousedown', (event) => {
+      // shoot code
+      this.state.betweenShotsRecharge = 0;
+      this.state.shootDuration = 0;
+      // shoot animation
+
+    });
+
     // example - set an object in onStart before starting our render loop!
     // this.cube = getObject(this.state, "cube1");
     // const otherCube = getObject(this.state, "cube2"); // we wont save this as instance var since we dont plan on using it in update
@@ -113,7 +121,10 @@ class Game {
   // Runs once every frame non stop after the scene loads
   onUpdate(deltaTime) {
     // TODO - Here we can add game logic, like moving game objects, detecting collisions, you name it. Examples of functions can be found in sceneFunctions
-
+    if (this.state.betweenShotsRecharge < TIME_BETWEEN_GUNFIRE) {
+      this.state.betweenShotsRecharge += deltaTime;
+      this.state.shootDuration += deltaTime;
+    }
     // example: Rotate a single object we defined in our start method
     // this.cube.rotate('x', deltaTime * 0.5);
 

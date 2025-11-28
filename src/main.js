@@ -5,6 +5,8 @@ var uiFile = "ui1.json"; // can change this to be the name of your scene
 const WALK_SPEED = 0.01;
 const RUN_SPEED = 0.05;
 var currentSpeed = 0.01;
+const TIME_BETWEEN_GUNFIRE = 0.2;
+const SHOOT_ANIMATION_TIME = 0.1;
 
 // This function loads on window load, uses async functions to load the scene then try to render it
 window.onload = async () => {
@@ -134,7 +136,9 @@ async function main() {
     meshCache: {},
     samplerExists: 0,
     samplerNormExists: 0,
-    keysPressed: {}
+    keysPressed: {},
+    betweenShotsRecharge: 0.0,
+    shootDuration: 0.1
   };
 
   state.numLights = state.pointLights.length;
@@ -364,17 +368,21 @@ function drawScene(gl, deltaTime, state) {
 
   state.uiObjects.forEach((object) => {
     // Choose to use our shader
+    
     gl.useProgram(object.programInfo.program);
     {
       gl.uniform3fv(object.programInfo.uniformLocations.diffuseVal, object.material.diffuse);
     }
     {
-      // Bind the buffer we want to draw
-      gl.bindVertexArray(object.buffers.vao);
+      if (object.name == "gunshot" && state.shootDuration > SHOOT_ANIMATION_TIME) {
+      } else {
+        // Bind the buffer we want to draw
+        gl.bindVertexArray(object.buffers.vao);
 
-      // Draw the object
-      const offset = 0; // Number of elements to skip before starting
-      gl.drawElements(gl.TRIANGLES, object.buffers.numVertices, gl.UNSIGNED_SHORT, offset);
+        // Draw the object
+        const offset = 0; // Number of elements to skip before starting
+        gl.drawElements(gl.TRIANGLES, object.buffers.numVertices, gl.UNSIGNED_SHORT, offset);
+      }
     }
   });
 
