@@ -154,7 +154,6 @@ async function main() {
   
   for (var i = 0; i < state.loadUIObjects.length; i++) {
     const element = state.loadUIObjects[i];
-    console.log(element);
     addUIElement(element, state, vertShaderUI, fragShaderSample);
   }
 
@@ -444,7 +443,6 @@ function drawScene(gl, deltaTime, state) {
           gl.uniform1f(gl.getUniformLocation(object.programInfo.program, 'pointLights[' + i + '].quadratic'), state.pointLights[i].quadratic);
         }
       }
-
 
       {
         // Bind the buffer we want to draw
