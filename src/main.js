@@ -13,6 +13,9 @@ window.onload = async () => {
   try {
     console.log("Starting to load scene file");
     await parseSceneFile(`./statefiles/${sceneFile}`, state);
+    state.camera.model = {
+      "position": state.camera.position
+    }
     await parseUIFile(`./statefiles/${uiFile}`, state);
     main();
   } catch (err) {
@@ -138,7 +141,8 @@ async function main() {
     samplerNormExists: 0,
     keysPressed: {},
     betweenShotsRecharge: 0.0,
-    shootDuration: 0.1
+    shootDuration: 0.1,
+    collidersLoaded: 0
   };
 
   state.numLights = state.pointLights.length;
@@ -302,6 +306,7 @@ function handleMovement(state) {
       vec3.normalize(right, right);
 
       vec3.add(state.camera.position, state.camera.position, vec3.fromValues(-currentSpeed*right[0], 0.0, -currentSpeed*right[2]));
+      state.camera.model.position = state.camera.position
   }
   if (state.keysPressed["d"]) {
       // Move right
@@ -317,6 +322,7 @@ function handleMovement(state) {
       vec3.normalize(right, right);
 
       vec3.add(state.camera.position, state.camera.position, vec3.fromValues(currentSpeed*right[0], 0.0, currentSpeed*right[2]));
+      state.camera.model.position = state.camera.position
   }
   if (state.keysPressed["w"]) {
       // Move forwards
@@ -326,6 +332,7 @@ function handleMovement(state) {
       vec3.normalize(at, at);
 
       vec3.add(state.camera.position, state.camera.position, vec3.fromValues(currentSpeed*at[0], 0.0, currentSpeed*at[2]));
+      state.camera.model.position = state.camera.position
   }
   if (state.keysPressed["s"]) {
       // Move backwards
@@ -335,6 +342,7 @@ function handleMovement(state) {
       vec3.normalize(at, at);
 
       vec3.add(state.camera.position, state.camera.position, vec3.fromValues(-currentSpeed*at[0], 0.0, -currentSpeed*at[2]));
+      state.camera.model.position = state.camera.position
   }
 }
 /**
