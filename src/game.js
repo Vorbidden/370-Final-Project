@@ -57,6 +57,7 @@ class Game {
         if (object.name == "Camera" && otherObject.name == "Mazewall-copy-copy") {
           const potato = 1;
         }
+        // Made these variables for testing, can remove later if needed
         var a = object.model.position[0] + object.collider.width / 2.0 >= otherObject.model.position[0] - otherObject.collider.width / 2.0;
         var b = object.model.position[0] - object.collider.width / 2.0 <= otherObject.model.position[0] + otherObject.collider.width / 2.0;
         var c = object.model.position[1] + object.collider.height / 2.0 >= otherObject.model.position[1] - otherObject.collider.height / 2.0;
