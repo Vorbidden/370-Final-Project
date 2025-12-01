@@ -54,9 +54,6 @@ class Game {
       // if (collide){ object.collider.onCollide(otherObject) } // fires what we defined our object should do when it collides
       // BOX TO BOX COLLISION
       if (object.collider.type == "BOX" && otherObject.collider.type == "BOX") {
-        if (object.name == "Camera" && otherObject.name == "Mazewall-copy-copy") {
-          const potato = 1;
-        }
         // Made these variables for testing, can remove later if needed
         var a = object.model.position[0] + object.collider.width / 2.0 >= otherObject.model.position[0] - otherObject.collider.width / 2.0;
         var b = object.model.position[0] - object.collider.width / 2.0 <= otherObject.model.position[0] + otherObject.collider.width / 2.0;
@@ -70,7 +67,6 @@ class Game {
           if (c && d) { 
             // MaxZ to MinZ
             if (e && f) {
-              console.log("IT WORKS FIRST TRY??");
               object.collider.onCollide(otherObject);
             }
           }
@@ -107,7 +103,41 @@ class Game {
     });
 
     // create the player collider
-    this.createBoxCollider(this.state.camera, 0.1, 0.1, 0.1);
+    this.createBoxCollider(this.state.camera, 1, 1, 1, (otherObject) => {
+      if (otherObject.collider.type == "BOX") {
+        // find the closest values of X,Y,Z with respect to the other object
+        // X
+        var a = this.state.camera.model.position[0] + this.state.camera.collider.width / 2.0 - (otherObject.model.position[0] - otherObject.collider.width / 2.0);
+        var b = this.state.camera.model.position[0] - this.state.camera.collider.width / 2.0 - (otherObject.model.position[0] + otherObject.collider.width / 2.0);
+        // Y
+        var c = this.state.camera.model.position[1] + this.state.camera.collider.height / 2.0 - (otherObject.model.position[1] - otherObject.collider.height / 2.0);
+        var d = this.state.camera.model.position[1] - this.state.camera.collider.height / 2.0 - (otherObject.model.position[1] + otherObject.collider.height / 2.0);
+        // Z
+        var e = this.state.camera.model.position[2] + this.state.camera.collider.length / 2.0 - (otherObject.model.position[2] - otherObject.collider.length / 2.0);
+        var f = this.state.camera.model.position[2] - this.state.camera.collider.length / 2.0 - (otherObject.model.position[2] + otherObject.collider.length / 2.0);
+
+        switch (Math.min(Math.abs(a), Math.abs(b), Math.abs(c), Math.abs(d), Math.abs(e), Math.abs(f))) {
+          case Math.abs(a):
+            vec3.add(this.state.camera.position, this.state.camera.position, vec3.fromValues(-a,0,0));
+            break;
+          case Math.abs(b):
+            vec3.add(this.state.camera.position, this.state.camera.position, vec3.fromValues(-b,0,0));
+            break;
+          case Math.abs(c):
+            vec3.add(this.state.camera.position, this.state.camera.position, vec3.fromValues(0,-c,0));
+            break;
+          case Math.abs(d):
+            vec3.add(this.state.camera.position, this.state.camera.position, vec3.fromValues(0,-d,0));
+            break;
+          case Math.abs(e):
+            vec3.add(this.state.camera.position, this.state.camera.position, vec3.fromValues(0,0,-e));
+            break;
+          case Math.abs(f):
+            vec3.add(this.state.camera.position, this.state.camera.position, vec3.fromValues(0,0,-f));
+            break;
+        }
+      }
+    });
     this.collidableObjects.push(this.state.camera);
 
     // create the wall colliders
@@ -121,7 +151,6 @@ class Game {
       var height = 0.5 * Math.abs(scaleMatrix[1]);
       var length = 0.5 * Math.abs(scaleMatrix[2]);
 
-      console.log(object.name, width, height, length);
       this.createBoxCollider(object, width, height, length);
       this.collidableObjects.push(object);
       }
