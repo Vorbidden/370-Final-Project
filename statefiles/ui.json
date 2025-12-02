@@ -1,7 +1,7 @@
 [
   {
     "name": "crosshair",
-    "material": {"ambient": [0.1,0.1,0.1], "diffuse": [1,0,0], "specular": [0.3,0.3,0.3], "n": 11}, 
+    "material": {"ambient": [0.1,0.1,0.1], "diffuse": [0,1,0], "specular": [0.3,0.3,0.3], "n": 11}, 
     "model": {
       "vertices": [[-0.01, 0.01, 0],[0.01, 0.01, 0],[0.01,-0.01,0],[-0.01,-0.01,0]],
       "triangles": [[0,1,2],[2,3,0]]

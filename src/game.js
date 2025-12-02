@@ -26,6 +26,7 @@ class Game {
   // Box collider is sizes of the objects X Y Z
   // Will be used for the WALLS
   createBoxCollider(object, width, height, length, onCollide = null) {
+    // NOTE: These are not exact and only make a box with respect to XYZ. thats right, theres no account for rotation. This is a problem that shouldnt need fixing but might.
     object.collider = {
       type: "BOX",
       width: width,
@@ -56,6 +57,8 @@ class Game {
       // BOX TO BOX COLLISION
       if (object.collider.type == "BOX" && otherObject.collider.type == "BOX") {
         // Made these variables for testing, can remove later if needed
+        // NOTE: There is something off about this code where the collision is offset in the x,z coords. 
+        // Can adjust to use centroid in the future i guess.
         var a = object.model.position[0] + object.collider.width / 2.0 >= otherObject.model.position[0] - otherObject.collider.width / 2.0;
         var b = object.model.position[0] - object.collider.width / 2.0 <= otherObject.model.position[0] + otherObject.collider.width / 2.0;
         var c = object.model.position[1] + object.collider.height / 2.0 >= otherObject.model.position[1] - otherObject.collider.height / 2.0;
@@ -150,9 +153,13 @@ class Game {
             // remove from spawned enemies list
             this.spawnedEnemies[possibleIndex] = enemy;
             this.spawnedEnemies.splice(possibleIndex, 1);
+
+            if (this.spawnedEnemies.length == 0) {
+              // all enemies are die.
+              console.log("All enemies clear, moving on to next level!")
+            }
           }
         }
-        console.log(nearestObject.name);
       }
     });
 
@@ -259,9 +266,9 @@ class Game {
           name: `enemy${i}`,
           health: 3
         }, enemy))
-        var width = 4;
+        var width = 1.5;
         var height = 11;
-        var length = 4;
+        var length = 1.5;
         this.createBoxCollider(enemy, width, height, length);
         this.collidableObjects.push(enemy);
       }
@@ -312,7 +319,6 @@ class Game {
     // this.spawnedObjects.forEach((object) => {
     //     object.rotate('y', deltaTime * 0.5);
     // });
-
 
     // example - call our collision check method on our cube
     this.checkCollision(this.state.camera);
