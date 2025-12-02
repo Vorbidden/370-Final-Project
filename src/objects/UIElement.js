@@ -102,7 +102,7 @@ class UIElement {
     const positions = new Float32Array(this.model.vertices.flat());
     //const normals = new Float32Array(this.model.normals.flat());
     const indices = this.model.triangles ? new Uint16Array(this.model.triangles.flat()) : null;
-    // const textureCoords = new Float32Array(this.model.uvs);
+    const textureCoords = new Float32Array(this.model.uvs); // Enabled
     // const bitangents = new Float32Array(this.model.bitangents);
 
     var vertexArrayObject = this.gl.createVertexArray();
@@ -114,7 +114,7 @@ class UIElement {
       attributes: {
         position: initPositionAttribute(this.gl, this.programInfo, positions),
         // normal: initNormalAttribute(this.gl, this.programInfo, normals),
-        // uv: initTextureCoords(this.gl, this.programInfo, textureCoords),
+        uv: initTextureCoords(this.gl, this.programInfo, textureCoords),
         // bitangents: initBitangentBuffer(this.gl, this.programInfo, bitangents)
       },
       indicies: indices ? initIndexBuffer(this.gl, indices) : null,
