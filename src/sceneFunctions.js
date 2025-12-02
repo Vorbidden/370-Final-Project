@@ -30,3 +30,20 @@ function randomVec3(min, max) {
     Math.random(min, max),
   )
 }
+
+function getRandomPositionInBounds() {
+  // room 1
+  if (Math.random() < 0.5) {
+    return vec3.fromValues(
+      Math.random(-11.25, 11.25),
+      3.6267051696777344,
+      Math.random(-11.24999925494194, 10.829392370651476)
+    );
+  }
+  // room 2
+  return vec3.fromValues(
+    Math.random(-11.25, 11.25),
+    3.6267051696777344,
+    Math.random(38.558009318687255, 86.24999925485463)
+  );
+}

@@ -3,6 +3,7 @@ class Game {
     this.state = state;
     this.spawnedObjects = [];
     this.collidableObjects = [];
+    this.spawnedEnemies = [];
   }
 
   // example - we can add our own custom method to our game and call it using 'this.customMethod()'
@@ -138,6 +139,19 @@ class Game {
       });
       if (nearestObject != null) {
         // Handle player shoot here
+        var possibleIndex = this.spawnedEnemies.findIndex(a => a.object == nearestObject);
+        if (possibleIndex != -1) {
+          let enemy = this.spawnedEnemies[possibleIndex];
+          // Temporary work-around for no health data on enemies
+          enemy.health -= 1;
+          if (enemy.health <= 0) {
+            // send them to the abyss!
+            enemy.object.model.position = vec3.fromValues(0, -100, 0);
+            // remove from spawned enemies list
+            this.spawnedEnemies[possibleIndex] = enemy;
+            this.spawnedEnemies.splice(possibleIndex, 1);
+          }
+        }
         console.log(nearestObject.name);
       }
     });
@@ -229,16 +243,29 @@ class Game {
     //     }
     // }
 
-    spawnObject({
-      name: "hitmarker",
-      type: "cube",
-      material: {
-        diffuse: vec3.fromValues(1,0,0)
-      },
-      position: vec3.fromValues(0,0,0),
-      scale: vec3.fromValues(0.1, 0.1, 0.1)
-    }, this.state);
-    this.hitmarker = getObject(this.state, "hitmarker");
+    // Spawn enemies
+    for (let i = 0; i < 1; i++) {
+        await spawnObject({
+          name: `enemy${i}`,
+          type: "cube",
+          material: {
+            diffuse: vec3.fromValues(1,0,0)
+          },
+          position: getRandomPositionInBounds(),
+          scale: vec3.fromValues(3,10,3)
+        }, this.state);
+        let enemy = getObject(this.state, `enemy${i}`);
+        this.spawnedEnemies.push(new Enemy({
+          name: `enemy${i}`,
+          health: 3
+        }, enemy))
+        var width = 4;
+        var height = 11;
+        var length = 4;
+        this.createBoxCollider(enemy, width, height, length);
+        this.collidableObjects.push(enemy);
+      }
+
 
     // example: spawn in objects, set constantRotate to true for them (used below) and give them a collider
     //   for (let i = 0; i < 2; i++) {
