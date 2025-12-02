@@ -138,6 +138,7 @@ class Game {
         }
       });
       if (nearestObject != null) {
+        // Handle player shoot here
         console.log(nearestObject.name);
       }
     });
