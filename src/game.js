@@ -100,6 +100,46 @@ class Game {
       // shoot animation
       this.state.betweenShotsRecharge = 0;
       this.state.shootDuration = 0;
+      // code
+      // Ray direction: D = P-E = "at" in our case
+      // Ray origin: P = camera.pos or enemy.pos
+      // onshoot:
+      var rayPos = this.state.camera.position;
+      var rayDir = vec3.create();
+      vec3.normalize(rayDir, state.camera.front);
+      var nearestObject = null;
+      var closestDistance;
+      var nearestCollision = vec3.create();
+      this.collidableObjects.forEach(otherObject => {
+        if (otherObject.collider.type == "BOX" && otherObject.name != "Camera") {
+          // MinX
+          var a = ((otherObject.model.position[0] - otherObject.collider.width / 2.0) - rayPos[0]) / rayDir[0];
+          // MaxX
+          var b = ((otherObject.model.position[0] + otherObject.collider.width / 2.0) - rayPos[0]) / rayDir[0];
+          // MinY
+          var c = ((otherObject.model.position[1] - otherObject.collider.height / 2.0) - rayPos[1]) / rayDir[1];
+          // MaxY
+          var d = ((otherObject.model.position[1] + otherObject.collider.height / 2.0) - rayPos[1]) / rayDir[1];
+          // MinZ
+          var e = ((otherObject.model.position[2] - otherObject.collider.length / 2.0) - rayPos[2]) / rayDir[2];
+          // MaxZ
+          var f = ((otherObject.model.position[2] + otherObject.collider.length / 2.0) - rayPos[2]) / rayDir[2];
+
+          var tnear = Math.max(Math.min(a, b), Math.min(c, d), Math.min(e, f))
+          var tfar = Math.min(Math.max(a, b), Math.max(c, d), Math.max(e, f))
+
+          // Hit
+          if (tnear >= 0 && tnear <= tfar) {
+            if (closestDistance > tnear || nearestObject == null) {
+              closestDistance = tnear;
+              nearestObject = otherObject;
+            }
+          }
+        }
+      });
+      if (nearestObject != null) {
+        console.log(nearestObject.name);
+      }
     });
 
     // create the player collider
@@ -188,6 +228,17 @@ class Game {
     //         }
     //     }
     // }
+
+    spawnObject({
+      name: "hitmarker",
+      type: "cube",
+      material: {
+        diffuse: vec3.fromValues(1,0,0)
+      },
+      position: vec3.fromValues(0,0,0),
+      scale: vec3.fromValues(0.1, 0.1, 0.1)
+    }, this.state);
+    this.hitmarker = getObject(this.state, "hitmarker");
 
     // example: spawn in objects, set constantRotate to true for them (used below) and give them a collider
     //   for (let i = 0; i < 2; i++) {
