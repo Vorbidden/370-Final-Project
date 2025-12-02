@@ -200,7 +200,7 @@ async function main() {
   loadingPage.remove();
 
   /************************************
- * MOUSE STUFF (I THINK I JUST COPY AND PASTED THIS FROM ONLINE, NO IDEA HOW IT WORKS JSUT DONT TOUCH IT)
+ * MOUSE STUFF
  ************************************/
     document.addEventListener("pointerlockchange", lockChangeAlert, false);
     function lockChangeAlert() {

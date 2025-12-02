@@ -78,7 +78,7 @@ class Game {
   // runs once on startup after the scene loads the objects
   async onStart() {
     console.log("On start");
-
+    
     // Set up our own superior input system (allows for holding)
     document.addEventListener('keydown', (event) => {
         if (!event.repeat) {
@@ -109,7 +109,6 @@ class Game {
       vec3.normalize(rayDir, state.camera.front);
       var nearestObject = null;
       var closestDistance;
-      var nearestCollision = vec3.create();
       this.collidableObjects.forEach(otherObject => {
         if (otherObject.collider.type == "BOX" && otherObject.name != "Camera") {
           // MinX
