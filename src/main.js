@@ -8,82 +8,6 @@ var currentSpeed = 0.01;
 const TIME_BETWEEN_GUNFIRE = 0.2;
 const SHOOT_ANIMATION_TIME = 0.1;
 
-// Camera Toggle from First-Person to Topdown
-function toggleCameraView(state) {
-  if (!state.originalCameraState) {
-    console.error("Original camera state not saved!");
-    return;
-  }
-  
-  if (!state.isTopDownView) {    
-    // Save current position
-    vec3.copy(state.originalCameraState.position, state.camera.position);
-    vec3.copy(state.originalCameraState.front, state.camera.front);
-    vec3.copy(state.originalCameraState.up, state.camera.up);
-    vec3.copy(state.originalCameraState.modelPosition, state.camera.model.position);
-    
-    // Move camera to top-down position
-    vec3.set(state.camera.position, 0, 50, 0); // Higher for better view
-    vec3.set(state.camera.front, 0, -1, 0);
-    vec3.set(state.camera.up, 0, 0, -1);
-    vec3.set(state.camera.model.position, 0, 50, 0);
-    
-    // Switch to orthographic projection
-    state.projectionMode = "orthographic";
-    state.isTopDownView = true;
-    
-    // Disable pointer lock
-    if (document.pointerLockElement) {
-      document.exitPointerLock();
-    }
-  } else {
-    // Switch back to first-person view
-    console.log("Switching back to first-person view with perspective projection");
-    
-    // Restore original camera state
-    vec3.copy(state.camera.position, state.originalCameraState.position);
-    vec3.copy(state.camera.front, state.originalCameraState.front);
-    vec3.copy(state.camera.up, state.originalCameraState.up);
-    vec3.copy(state.camera.model.position, state.originalCameraState.modelPosition);
-    
-    // Switch back to perspective projection
-    state.projectionMode = "perspective";
-    state.isTopDownView = false;
-    
-    // Re-enable pointer lock
-    if (!document.pointerLockElement && state.canvas) {
-      state.canvas.requestPointerLock();
-    }
-  }
-}
-
-function createOrthographicMatrix(left, right, bottom, top, near, far) {
-  const mat = mat4.create();
-  
-  mat[0] = 2 / (right - left);
-  mat[1] = 0;
-  mat[2] = 0;
-  mat[3] = 0;
-  
-  mat[4] = 0;
-  mat[5] = 2 / (top - bottom);
-  mat[6] = 0;
-  mat[7] = 0;
-  
-  mat[8] = 0;
-  mat[9] = 0;
-  mat[10] = -2 / (far - near);
-  mat[11] = 0;
-  
-  mat[12] = -(right + left) / (right - left);
-  mat[13] = -(top + bottom) / (top - bottom);
-  mat[14] = -(far + near) / (far - near);
-  mat[15] = 1;
-  
-  return mat;
-}
-
-
 // This function loads on window load, uses async functions to load the scene then try to render it
 window.onload = async () => {
   try {
@@ -92,6 +16,7 @@ window.onload = async () => {
     state.camera.model = {
       "position": state.camera.position
     }
+    state.camera.centroid = vec3.fromValues(0,0,0);
     await parseUIFile(`./statefiles/${uiFile}`, state);
     main();
   } catch (err) {
@@ -281,7 +206,7 @@ async function main() {
     objectCount: 0,
     lightIndices: [],
     keyboard: {},
-    mouse: { sensitivity: 0.007 },
+    mouse: { sensitivity: 0.004 },
     meshCache: {},
     samplerExists: 0,
     samplerNormExists: 0,
@@ -713,3 +638,78 @@ function drawScene(gl, deltaTime, state) {
     }
   });
 }
+// Camera Toggle from First-Person to Topdown
+function toggleCameraView(state) {
+  if (!state.originalCameraState) {
+    console.error("Original camera state not saved!");
+    return;
+  }
+  
+  if (!state.isTopDownView) {    
+    // Save current position
+    vec3.copy(state.originalCameraState.position, state.camera.position);
+    vec3.copy(state.originalCameraState.front, state.camera.front);
+    vec3.copy(state.originalCameraState.up, state.camera.up);
+    vec3.copy(state.originalCameraState.modelPosition, state.camera.model.position);
+    
+    // Move camera to top-down position
+    vec3.set(state.camera.position, 0, 50, 0); // Higher for better view
+    vec3.set(state.camera.front, 0, -1, 0);
+    vec3.set(state.camera.up, 0, 0, -1);
+    vec3.set(state.camera.model.position, 0, 50, 0);
+    
+    // Switch to orthographic projection
+    state.projectionMode = "orthographic";
+    state.isTopDownView = true;
+    
+    // Disable pointer lock
+    if (document.pointerLockElement) {
+      document.exitPointerLock();
+    }
+  } else {
+    // Switch back to first-person view
+    console.log("Switching back to first-person view with perspective projection");
+    
+    // Restore original camera state
+    vec3.copy(state.camera.position, state.originalCameraState.position);
+    vec3.copy(state.camera.front, state.originalCameraState.front);
+    vec3.copy(state.camera.up, state.originalCameraState.up);
+    vec3.copy(state.camera.model.position, state.originalCameraState.modelPosition);
+    
+    // Switch back to perspective projection
+    state.projectionMode = "perspective";
+    state.isTopDownView = false;
+    
+    // Re-enable pointer lock
+    if (!document.pointerLockElement && state.canvas) {
+      state.canvas.requestPointerLock();
+    }
+  }
+}
+
+function createOrthographicMatrix(left, right, bottom, top, near, far) {
+  const mat = mat4.create();
+  
+  mat[0] = 2 / (right - left);
+  mat[1] = 0;
+  mat[2] = 0;
+  mat[3] = 0;
+  
+  mat[4] = 0;
+  mat[5] = 2 / (top - bottom);
+  mat[6] = 0;
+  mat[7] = 0;
+  
+  mat[8] = 0;
+  mat[9] = 0;
+  mat[10] = -2 / (far - near);
+  mat[11] = 0;
+  
+  mat[12] = -(right + left) / (right - left);
+  mat[13] = -(top + bottom) / (top - bottom);
+  mat[14] = -(far + near) / (far - near);
+  mat[15] = 1;
+  
+  return mat;
+}
+
