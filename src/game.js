@@ -139,7 +139,6 @@ class Game {
         }
       });
       if (nearestObject != null) {
-        console.log(this.state.camera.position)
         // Handle player shoot here
         var possibleIndex = this.spawnedEnemies.findIndex(a => a.object == nearestObject);
         if (possibleIndex != -1) {
@@ -255,16 +254,7 @@ class Game {
           name: `enemy${i}`,
           type: "mesh",
           material: {
-            diffuse: vec3.fromValues(0.3,0,0),
-            diffuseTexture: {
-                    texture: {},
-                    name: "Eye_D.jpg"
-                },
-                normalTexture: {
-                    texture: {},
-                    name: "Eye_N.jpg"
-                }
-
+            diffuse: vec3.fromValues(0.3,0,0)
           },
           fileName: "15792_Novelty_Head-Full-Demon_v1.obj",
           position: vec3.fromValues(20, 8, -21.59871034869866),

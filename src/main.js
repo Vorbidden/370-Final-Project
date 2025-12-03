@@ -15,10 +15,7 @@ function toggleCameraView(state) {
     return;
   }
   
-  if (!state.isTopDownView) {
-    // Switch to top-down view
-    console.log("Switching to top-down view with orthographic projection");
-    
+  if (!state.isTopDownView) {    
     // Save current position
     vec3.copy(state.originalCameraState.position, state.camera.position);
     vec3.copy(state.originalCameraState.front, state.camera.front);
