@@ -1,12 +1,91 @@
 var state = {};
 var game;
-var sceneFile = "gamescene.json"; // can change this to be the name of your scene
+var sceneFile = "GameScene2.json"; // can change this to be the name of your scene
 var uiFile = "ui.json"; // can change this to be the name of your scene
 const WALK_SPEED = 0.01;
 const RUN_SPEED = 0.05;
 var currentSpeed = 0.01;
 const TIME_BETWEEN_GUNFIRE = 0.2;
 const SHOOT_ANIMATION_TIME = 0.1;
+
+// Camera Toggle from First-Person to Topdown
+function toggleCameraView(state) {
+  if (!state.originalCameraState) {
+    console.error("Original camera state not saved!");
+    return;
+  }
+  
+  if (!state.isTopDownView) {
+    // Switch to top-down view
+    console.log("Switching to top-down view with orthographic projection");
+    
+    // Save current position
+    vec3.copy(state.originalCameraState.position, state.camera.position);
+    vec3.copy(state.originalCameraState.front, state.camera.front);
+    vec3.copy(state.originalCameraState.up, state.camera.up);
+    vec3.copy(state.originalCameraState.modelPosition, state.camera.model.position);
+    
+    // Move camera to top-down position
+    vec3.set(state.camera.position, 0, 50, 0); // Higher for better view
+    vec3.set(state.camera.front, 0, -1, 0);
+    vec3.set(state.camera.up, 0, 0, -1);
+    vec3.set(state.camera.model.position, 0, 50, 0);
+    
+    // Switch to orthographic projection
+    state.projectionMode = "orthographic";
+    state.isTopDownView = true;
+    
+    // Disable pointer lock
+    if (document.pointerLockElement) {
+      document.exitPointerLock();
+    }
+  } else {
+    // Switch back to first-person view
+    console.log("Switching back to first-person view with perspective projection");
+    
+    // Restore original camera state
+    vec3.copy(state.camera.position, state.originalCameraState.position);
+    vec3.copy(state.camera.front, state.originalCameraState.front);
+    vec3.copy(state.camera.up, state.originalCameraState.up);
+    vec3.copy(state.camera.model.position, state.originalCameraState.modelPosition);
+    
+    // Switch back to perspective projection
+    state.projectionMode = "perspective";
+    state.isTopDownView = false;
+    
+    // Re-enable pointer lock
+    if (!document.pointerLockElement && state.canvas) {
+      state.canvas.requestPointerLock();
+    }
+  }
+}
+
+function createOrthographicMatrix(left, right, bottom, top, near, far) {
+  const mat = mat4.create();
+  
+  mat[0] = 2 / (right - left);
+  mat[1] = 0;
+  mat[2] = 0;
+  mat[3] = 0;
+  
+  mat[4] = 0;
+  mat[5] = 2 / (top - bottom);
+  mat[6] = 0;
+  mat[7] = 0;
+  
+  mat[8] = 0;
+  mat[9] = 0;
+  mat[10] = -2 / (far - near);
+  mat[11] = 0;
+  
+  mat[12] = -(right + left) / (right - left);
+  mat[13] = -(top + bottom) / (top - bottom);
+  mat[14] = -(far + near) / (far - near);
+  mat[15] = 1;
+  
+  return mat;
+}
+
 
 // This function loads on window load, uses async functions to load the scene then try to render it
 window.onload = async () => {
@@ -58,6 +137,36 @@ async function main() {
     return;
   }
 
+  // === SAVE ORIGINAL CAMERA STATE RIGHT AWAY ===
+  // This should be the VERY FIRST thing you do with the camera
+  state.originalCameraState = {
+    position: vec3.clone(state.camera.position),
+    front: vec3.clone(state.camera.front),
+    up: vec3.clone(state.camera.up),
+    modelPosition: vec3.clone(state.camera.model.position)
+  };
+
+  console.log("Saved original camera state:", state.originalCameraState.position);
+  
+  // Initialize isTopDownView if not already set
+  if (state.isTopDownView === undefined) {
+    state.isTopDownView = false;
+  }
+
+  // Key listener
+  document.addEventListener('keydown', (event) => {
+    state.keysPressed[event.key.toLowerCase()] = true;
+    
+    // Toggle camera view when 'M' is pressed
+    if (event.key.toLowerCase() === 'm') {
+      toggleCameraView(state);
+    }
+  });
+
+  document.addEventListener('keyup', (event) => {
+    delete state.keysPressed[event.key.toLowerCase()];
+  });
+
   canvas.addEventListener("click", async () => {
       if (!document.pointerLockElement) {
           try {
@@ -81,27 +190,33 @@ async function main() {
    */
   const vertShaderSample =
     `#version 300 es
-        in vec3 aPosition;
-        in vec3 aNormal;
-        in vec2 aUV; // UV added
+    in vec3 aPosition;
+    in vec3 aNormal;
+    in vec2 aUV;
 
-        uniform mat4 uProjectionMatrix;
-        uniform mat4 uViewMatrix;
-        uniform mat4 uModelMatrix;
+    uniform mat4 uProjectionMatrix;
+    uniform mat4 uViewMatrix;
+    uniform mat4 uModelMatrix;
 
-        out vec3 oNormal;
-        out vec2 oUV; // UV added
+    out vec3 oNormal;
+    out vec2 oUV;
+    out vec3 oFragPos;
 
-        void main() {
-            // Simply use this normal so no error is thrown
-            oNormal = aNormal;
-            // Set the UV
-            oUV = aUV;
+    void main() {
+    // Transform position to world space
+    vec4 worldPos = uModelMatrix * vec4(aPosition, 1.0);
+    oFragPos = worldPos.xyz;
+    
+    // Transform normal
+    oNormal = mat3(transpose(inverse(uModelMatrix))) * aNormal;
+    
+    // Pass UV
+        oUV = aUV;
 
-            // Postion of the fragment in world space
-            gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aPosition, 1.0);
-        }
-        `;
+    // Position in clip space
+    gl_Position = uProjectionMatrix * uViewMatrix * worldPos;
+    }
+    `;
 
   const vertShaderUI =
     `#version 300 es
@@ -148,9 +263,20 @@ async function main() {
   /**
    * Initialize state with new values (some of these you can replace/change)
    */
+  const savedOriginalCameraState = state.originalCameraState;
+  const savedIsTopDownView = state.isTopDownView;
+
   state = {
     ...state, // this just takes what was already in state and applies it here again
     gl,
+    projectionMode: "perspective", // "perspective" or "orthographic"
+    orthographicSettings: {
+      left: -50,
+      right: 50,
+      bottom: -50,
+      top: 50,
+      near: 0.1,
+      far: 1000},
     vertShaderSample,
     fragShaderSample,
     vertShaderUI,
@@ -165,7 +291,9 @@ async function main() {
     keysPressed: {},
     betweenShotsRecharge: 0.0,
     shootDuration: 0.1,
-    collidersLoaded: 0
+    collidersLoaded: 0,
+    isTopDownView: savedIsTopDownView || false,
+    originalCameraState: savedOriginalCameraState // Stores camera position before topdown
   };
 
   state.numLights = state.pointLights.length;
@@ -217,6 +345,10 @@ async function main() {
 
     function updatePosition(e) {
         // update at = normalize(center - pos)
+        if (state.isTopDownView) {
+          return;
+        }
+        
         let camFront = vec3.fromValues(0, 0, 0);
         vec3.add(camFront, state.camera.position, state.camera.front);
         if (e.movementX != 0) {
@@ -308,6 +440,12 @@ function startRendering(gl, state) {
 
 // Superior movement
 function handleMovement(state) {
+  
+  // Only allow movement when not in top-down view
+  if (state.isTopDownView) {
+    return;
+  }
+
     let camFront = vec3.fromValues(0, 0, 0);
     vec3.add(camFront, state.camera.position, state.camera.front);
     if (state.keysPressed["shift"]) {
@@ -368,6 +506,7 @@ function handleMovement(state) {
       state.camera.model.position = state.camera.position
   }
 }
+
 /**
  * 
  * @param {gl context} gl 
@@ -397,9 +536,10 @@ function drawScene(gl, deltaTime, state) {
       >= vec3.distance(state.camera.position, vec3.fromValues(bCentroidFour[0], bCentroidFour[1], bCentroidFour[2])) ? -1 : 1;
   });
 
+  if (!state.isTopDownView) {
+    // Only renders UI in FP view
   state.uiObjects.forEach((object) => {
     // Choose to use our shader
-    
     gl.useProgram(object.programInfo.program);
     {
       gl.uniform3fv(object.programInfo.uniformLocations.diffuseVal, object.material.diffuse);
@@ -416,6 +556,7 @@ function drawScene(gl, deltaTime, state) {
       }
     }
   });
+  }
 
   // iterate over each object and render them
   sorted.map((object) => {
@@ -423,12 +564,49 @@ function drawScene(gl, deltaTime, state) {
     {
       // Projection Matrix ....
       let projectionMatrix = mat4.create();
-      let fovy = 90.0 * Math.PI / 180.0; // Vertical field of view in radians
-      let aspect = state.canvas.clientWidth / state.canvas.clientHeight; // Aspect ratio of the canvas
-      let near = 0.1; // Near clipping plane
-      let far = 1000000.0; // Far clipping plane
 
-      mat4.perspective(projectionMatrix, fovy, aspect, near, far);
+      if (state.projectionMode === "orthographic" && state.isTopDownView) {
+        // Orthographic projection for top-down view
+        const ortho = state.orthographicSettings;
+        projectionMatrix = createOrthographicMatrix(
+          ortho.left, ortho.right, 
+          ortho.bottom, ortho.top, 
+          ortho.near, ortho.far
+        );
+        
+        // Adjust view matrix for orthographic (top-down looking straight down)
+        let viewMatrix = mat4.create();
+        mat4.lookAt(
+          viewMatrix,
+          state.camera.position,
+          [state.camera.position[0], 0, state.camera.position[2]], // Look at ground level
+          [0, 0, -1] // Z is up for orthographic top-down
+        );
+        gl.uniformMatrix4fv(object.programInfo.uniformLocations.view, false, viewMatrix);
+        state.viewMatrix = viewMatrix;
+        
+      } else {
+        // Perspective projection for first-person view
+        let fovy = 90.0 * Math.PI / 180.0;
+        let aspect = state.canvas.clientWidth / state.canvas.clientHeight;
+        let near = 0.1;
+        let far = 1000000.0;
+
+            mat4.perspective(projectionMatrix, fovy, aspect, near, far);
+        
+        // Regular view matrix for perspective
+        let viewMatrix = mat4.create();
+        let camFront = vec3.fromValues(0, 0, 0);
+        vec3.add(camFront, state.camera.position, state.camera.front);
+        mat4.lookAt(
+          viewMatrix,
+          state.camera.position,
+          camFront,
+          state.camera.up,
+        );
+        gl.uniformMatrix4fv(object.programInfo.uniformLocations.view, false, viewMatrix);
+        state.viewMatrix = viewMatrix;
+      }
       gl.uniformMatrix4fv(object.programInfo.uniformLocations.projection, false, projectionMatrix);
       state.projectionMatrix = projectionMatrix;
 

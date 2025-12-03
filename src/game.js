@@ -203,7 +203,7 @@ class Game {
 
     // create the wall colliders
     this.state.objects.forEach(object => {
-    if (object.type == "plane") {
+    if (object.type == "plane" || object.type == "cube") {
       // NOTE: ALL PLANES ARE 0.5 IN LENGTH HEIGHT AND WIDTH BY DEFAULT
       // So just apply default size * scale
       var scaleMatrix = vec4.fromValues(object.model.scale[0],object.model.scale[1],object.model.scale[2], 1.0);
@@ -320,7 +320,9 @@ class Game {
     //     object.rotate('y', deltaTime * 0.5);
     // });
 
-    // example - call our collision check method on our cube
-    this.checkCollision(this.state.camera);
+    // Only check collisions when NOT in top-down view
+    if (!this.state.isTopDownView && this.state.camera.collider) {
+      this.checkCollision(this.state.camera);
+    }
   }
 }
