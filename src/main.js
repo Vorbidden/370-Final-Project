@@ -2,7 +2,7 @@ var state = {};
 var game;
 var sceneFile = "GameScene2.json"; // can change this to be the name of your scene
 var uiFile = "ui.json"; // can change this to be the name of your scene
-const WALK_SPEED = 0.01;
+const WALK_SPEED = 0.02;
 const RUN_SPEED = 0.05;
 var currentSpeed = 0.01;
 const TIME_BETWEEN_GUNFIRE = 0.2;

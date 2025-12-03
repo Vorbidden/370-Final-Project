@@ -57,14 +57,12 @@ class Game {
       // BOX TO BOX COLLISION
       if (object.collider.type == "BOX" && otherObject.collider.type == "BOX") {
         // Made these variables for testing, can remove later if needed
-        // NOTE: There is something off about this code where the collision is offset in the x,z coords. 
-        // Can adjust to use centroid in the future i guess.
-        var a = object.model.position[0] + object.collider.width / 2.0 >= otherObject.model.position[0] - otherObject.collider.width / 2.0;
-        var b = object.model.position[0] - object.collider.width / 2.0 <= otherObject.model.position[0] + otherObject.collider.width / 2.0;
-        var c = object.model.position[1] + object.collider.height / 2.0 >= otherObject.model.position[1] - otherObject.collider.height / 2.0;
-        var d = object.model.position[1] - object.collider.height / 2.0 <= otherObject.model.position[1] + otherObject.collider.height / 2.0;
-        var e = object.model.position[2] + object.collider.length / 2.0 >= otherObject.model.position[2] - otherObject.collider.length / 2.0;
-        var f = object.model.position[2] - object.collider.length / 2.0 <= otherObject.model.position[2] + otherObject.collider.length / 2.0;
+        var a = object.model.position[0] + object.collider.width / 2.0 >= otherObject.model.position[0] + otherObject.centroid[0] - otherObject.collider.width / 2.0;
+        var b = object.model.position[0] - object.collider.width / 2.0 <= otherObject.model.position[0] + otherObject.centroid[0] + otherObject.collider.width / 2.0;
+        var c = object.model.position[1] + object.collider.height / 2.0 >= otherObject.model.position[1] + otherObject.centroid[1] - otherObject.collider.height / 2.0;
+        var d = object.model.position[1] - object.collider.height / 2.0 <= otherObject.model.position[1] + otherObject.centroid[1] + otherObject.collider.height / 2.0;
+        var e = object.model.position[2] + object.collider.length / 2.0 >= otherObject.model.position[2] + otherObject.centroid[2] - otherObject.collider.length / 2.0;
+        var f = object.model.position[2] - object.collider.length / 2.0 <= otherObject.model.position[2] + otherObject.centroid[2] + otherObject.collider.length / 2.0;
         // MaxX to MinX
         if (a && b) {
           // MaxY to MinY
@@ -116,17 +114,17 @@ class Game {
       this.collidableObjects.forEach(otherObject => {
         if (otherObject.collider.type == "BOX" && otherObject.name != "Camera") {
           // MinX
-          var a = ((otherObject.model.position[0] - otherObject.collider.width / 2.0) - rayPos[0]) / rayDir[0];
+          var a = ((otherObject.model.position[0]+ otherObject.centroid[0] - otherObject.collider.width / 2.0) - rayPos[0]) / rayDir[0];
           // MaxX
-          var b = ((otherObject.model.position[0] + otherObject.collider.width / 2.0) - rayPos[0]) / rayDir[0];
+          var b = ((otherObject.model.position[0]+ otherObject.centroid[0] + otherObject.collider.width / 2.0) - rayPos[0]) / rayDir[0];
           // MinY
-          var c = ((otherObject.model.position[1] - otherObject.collider.height / 2.0) - rayPos[1]) / rayDir[1];
+          var c = ((otherObject.model.position[1]+ otherObject.centroid[1] - otherObject.collider.height / 2.0) - rayPos[1]) / rayDir[1];
           // MaxY
-          var d = ((otherObject.model.position[1] + otherObject.collider.height / 2.0) - rayPos[1]) / rayDir[1];
+          var d = ((otherObject.model.position[1]+ otherObject.centroid[1] + otherObject.collider.height / 2.0) - rayPos[1]) / rayDir[1];
           // MinZ
-          var e = ((otherObject.model.position[2] - otherObject.collider.length / 2.0) - rayPos[2]) / rayDir[2];
+          var e = ((otherObject.model.position[2]+ otherObject.centroid[2] - otherObject.collider.length / 2.0) - rayPos[2]) / rayDir[2];
           // MaxZ
-          var f = ((otherObject.model.position[2] + otherObject.collider.length / 2.0) - rayPos[2]) / rayDir[2];
+          var f = ((otherObject.model.position[2]+ otherObject.centroid[2] + otherObject.collider.length / 2.0) - rayPos[2]) / rayDir[2];
 
           var tnear = Math.max(Math.min(a, b), Math.min(c, d), Math.min(e, f))
           var tfar = Math.min(Math.max(a, b), Math.max(c, d), Math.max(e, f))
@@ -141,6 +139,7 @@ class Game {
         }
       });
       if (nearestObject != null) {
+        console.log(this.state.camera.position)
         // Handle player shoot here
         var possibleIndex = this.spawnedEnemies.findIndex(a => a.object == nearestObject);
         if (possibleIndex != -1) {
@@ -168,14 +167,14 @@ class Game {
       if (otherObject.collider.type == "BOX") {
         // find the closest values of X,Y,Z with respect to the other object
         // X
-        var a = this.state.camera.model.position[0] + this.state.camera.collider.width / 2.0 - (otherObject.model.position[0] - otherObject.collider.width / 2.0);
-        var b = this.state.camera.model.position[0] - this.state.camera.collider.width / 2.0 - (otherObject.model.position[0] + otherObject.collider.width / 2.0);
+        var a = this.state.camera.model.position[0] + this.state.camera.collider.width / 2.0 - (otherObject.model.position[0] + otherObject.centroid[0] - otherObject.collider.width / 2.0);
+        var b = this.state.camera.model.position[0] - this.state.camera.collider.width / 2.0 - (otherObject.model.position[0] + otherObject.centroid[0] + otherObject.collider.width / 2.0);
         // Y
-        var c = this.state.camera.model.position[1] + this.state.camera.collider.height / 2.0 - (otherObject.model.position[1] - otherObject.collider.height / 2.0);
-        var d = this.state.camera.model.position[1] - this.state.camera.collider.height / 2.0 - (otherObject.model.position[1] + otherObject.collider.height / 2.0);
+        var c = this.state.camera.model.position[1] + this.state.camera.collider.height / 2.0 - (otherObject.model.position[1] + otherObject.centroid[1] - otherObject.collider.height / 2.0);
+        var d = this.state.camera.model.position[1] - this.state.camera.collider.height / 2.0 - (otherObject.model.position[1] + otherObject.centroid[1] + otherObject.collider.height / 2.0);
         // Z
-        var e = this.state.camera.model.position[2] + this.state.camera.collider.length / 2.0 - (otherObject.model.position[2] - otherObject.collider.length / 2.0);
-        var f = this.state.camera.model.position[2] - this.state.camera.collider.length / 2.0 - (otherObject.model.position[2] + otherObject.collider.length / 2.0);
+        var e = this.state.camera.model.position[2] + this.state.camera.collider.length / 2.0 - (otherObject.model.position[2] + otherObject.centroid[2] - otherObject.collider.length / 2.0);
+        var f = this.state.camera.model.position[2] - this.state.camera.collider.length / 2.0 - (otherObject.model.position[2] + otherObject.centroid[2] + otherObject.collider.length / 2.0);
 
         switch (Math.min(Math.abs(a), Math.abs(b), Math.abs(c), Math.abs(d), Math.abs(e), Math.abs(f))) {
           case Math.abs(a):
@@ -254,21 +253,31 @@ class Game {
     for (let i = 0; i < 1; i++) {
         await spawnObject({
           name: `enemy${i}`,
-          type: "cube",
+          type: "mesh",
           material: {
-            diffuse: vec3.fromValues(1,0,0)
+            diffuse: vec3.fromValues(0.3,0,0),
+            diffuseTexture: {
+                    texture: {},
+                    name: "Eye_D.jpg"
+                },
+                normalTexture: {
+                    texture: {},
+                    name: "Eye_N.jpg"
+                }
+
           },
-          position: getRandomPositionInBounds(),
-          scale: vec3.fromValues(3,10,3)
+          fileName: "15792_Novelty_Head-Full-Demon_v1.obj",
+          position: vec3.fromValues(20, 8, -21.59871034869866),
+          scale: vec3.fromValues(0.08,0.08,0.08)
         }, this.state);
         let enemy = getObject(this.state, `enemy${i}`);
         this.spawnedEnemies.push(new Enemy({
           name: `enemy${i}`,
           health: 3
         }, enemy))
-        var width = 1.5;
-        var height = 11;
-        var length = 1.5;
+        var width = 3;
+        var height = 3;
+        var length = 3;
         this.createBoxCollider(enemy, width, height, length);
         this.collidableObjects.push(enemy);
       }
