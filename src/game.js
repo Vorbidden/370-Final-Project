@@ -277,6 +277,12 @@ class Game {
           // LOSE GAME
           //console.log("Player has died");
           // Death state
+          this.state.gameOver = true;
+          if (!this.state.isTopDownView) {
+            toggleCameraView(this.state);
+            let p = document.getElementById("gameOverText");
+            p.textContent = "GAME OVER";
+          }
         }
         else if (otherObject.collider.type == "BOX") {
           // find the closest values of X,Y,Z with respect to the other object

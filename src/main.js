@@ -214,6 +214,7 @@ async function main() {
     betweenShotsRecharge: 0.0,
     shootDuration: 0.1,
     collidersLoaded: 0,
+    gameOver: false,
     isTopDownView: savedIsTopDownView || false,
     originalCameraState: savedOriginalCameraState // Stores camera position before topdown
   };
@@ -255,10 +256,8 @@ async function main() {
     document.addEventListener("pointerlockchange", lockChangeAlert, false);
     function lockChangeAlert() {
         if (document.pointerLockElement === canvas) {
-            console.log("The pointer lock status is now locked");
             document.addEventListener("mousemove", updatePosition, false);
         } else {
-            console.log("The pointer lock status is now unlocked");
             document.removeEventListener("mousemove", updatePosition, false);
         }
     }
@@ -640,7 +639,7 @@ function drawScene(gl, deltaTime, state) {
 }
 // Camera Toggle from First-Person to Topdown
 function toggleCameraView(state) {
-  if (!state.originalCameraState) {
+  if (!state.originalCameraState && !state.gameOver) {
     console.error("Original camera state not saved!");
     return;
   }
