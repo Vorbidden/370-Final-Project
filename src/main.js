@@ -1,3 +1,5 @@
+// Test Comment
+
 var state = {};
 var game;
 var sceneFile = "GameScene2.json"; // can change this to be the name of your scene
