@@ -259,6 +259,7 @@ class Game {
           fileName: "15792_Novelty_Head-Full-Demon_v1.obj",
           position: vec3.fromValues(20, 8, -21.59871034869866),
           scale: vec3.fromValues(0.08,0.08,0.08)
+          // NOTE: DO NOT ADD ROTATION IT WILL BREAK THE ROTATING TOWARDS PLAYER THING OK BYE
         }, this.state);
         let enemy = getObject(this.state, `enemy${i}`);
         this.spawnedEnemies.push(new Enemy({
@@ -399,6 +400,11 @@ class Game {
       if (nearestObject != null) {
         if (nearestObject == this.state.camera) {
           // look at player WHY IS THIS SO HARD???
+          var cross = vec3.create();
+          vec3.cross(cross,vec3.fromValues(enemy.forward[0], 0, enemy.forward[2]), vec3.fromValues(rayDir[0], 0, rayDir[2]));
+          var angle = vec3.angle(vec3.fromValues(enemy.forward[0], 0, enemy.forward[2]), vec3.fromValues(rayDir[0], 0, rayDir[2]));
+          mat4.rotate(enemy.object.model.rotation, enemy.object.model.rotation, angle, cross);
+          vec3.copy(enemy.forward, rayDir);
           vec3.scale(rayDir, rayDir, 0.01);
           vec3.add(enemy.object.model.position, enemy.object.model.position, rayDir);
         }
