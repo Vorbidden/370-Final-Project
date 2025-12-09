@@ -359,7 +359,8 @@ class Game {
       this.checkCollision(this.state.camera);
 
 
-      this.spawnedEnemies.forEach(enemy => {
+      // Find player scripts
+      this.spawnedEnemies.forEach(enemy => {        
         // create a raycast from enemy to player to check if there is a sightline
         // because no way in hell am i coding pathfinding
         var object = enemy.object;
@@ -399,12 +400,14 @@ class Game {
         });
         if (nearestObject != null) {
           if (nearestObject == this.state.camera) {
-            // look at player WHY IS THIS SO HARD???
+            // Angle enemy to player
             var cross = vec3.create();
             vec3.cross(cross, vec3.fromValues(enemy.forward[0], 0, enemy.forward[2]), vec3.fromValues(rayDir[0], 0, rayDir[2]));
             var angle = vec3.angle(vec3.fromValues(enemy.forward[0], 0, enemy.forward[2]), vec3.fromValues(rayDir[0], 0, rayDir[2]));
             mat4.rotate(enemy.object.model.rotation, enemy.object.model.rotation, angle, cross);
             vec3.copy(enemy.forward, rayDir);
+
+            // Move enemy to player
             vec3.scale(rayDir, rayDir, 0.01);
             vec3.add(enemy.object.model.position, enemy.object.model.position, rayDir);
           }
