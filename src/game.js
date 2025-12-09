@@ -261,45 +261,53 @@ class Game {
         scale: vec3.fromValues(0.08, 0.08, 0.08)
         // NOTE: DO NOT ADD ROTATION IT WILL BREAK THE ROTATING TOWARDS PLAYER THING OK BYE
       }, this.state);
+      
       let enemy = getObject(this.state, `enemy${i}`);
+
       this.spawnedEnemies.push(new Enemy({
         name: `enemy${i}`,
         health: 3
       }, enemy))
+
       var width = 3;
       var height = 3;
       var length = 3;
       this.createBoxCollider(enemy, width, height, length, (otherObject) => {
-        if (otherObject.collider.type == "BOX") {
+        if (otherObject == this.state.camera) {
+          // LOSE GAME
+          //console.log("Player has died");
+          // Death state
+        }
+        else if (otherObject.collider.type == "BOX") {
           // find the closest values of X,Y,Z with respect to the other object
           // X
-          var a = enemy.object.model.position[0] + enemy.object.centroid[0] + enemy.collider.width / 2.0 - (otherObject.model.position[0] + otherObject.centroid[0] - otherObject.collider.width / 2.0);
-          var b = enemy.object.model.position[0] + enemy.object.centroid[0] - enemy.collider.width / 2.0 - (otherObject.model.position[0] + otherObject.centroid[0] + otherObject.collider.width / 2.0);
+          var a = enemy.model.position[0] + enemy.centroid[0] + enemy.collider.width / 2.0 - (otherObject.model.position[0] + otherObject.centroid[0] - otherObject.collider.width / 2.0);
+          var b = enemy.model.position[0] + enemy.centroid[0] - enemy.collider.width / 2.0 - (otherObject.model.position[0] + otherObject.centroid[0] + otherObject.collider.width / 2.0);
           // Y
-          var c = enemy.object.model.position[1] + enemy.object.centroid[1] + enemy.collider.height / 2.0 - (otherObject.model.position[1] + otherObject.centroid[1] - otherObject.collider.height / 2.0);
-          var d = enemy.object.model.position[1] + enemy.object.centroid[1] - enemy.collider.height / 2.0 - (otherObject.model.position[1] + otherObject.centroid[1] + otherObject.collider.height / 2.0);
+          var c = enemy.model.position[1] + enemy.centroid[1] + enemy.collider.height / 2.0 - (otherObject.model.position[1] + otherObject.centroid[1] - otherObject.collider.height / 2.0);
+          var d = enemy.model.position[1] + enemy.centroid[1] - enemy.collider.height / 2.0 - (otherObject.model.position[1] + otherObject.centroid[1] + otherObject.collider.height / 2.0);
           // Z
-          var e = enemy.object.model.position[2] + enemy.object.centroid[2] + enemy.collider.length / 2.0 - (otherObject.model.position[2] + otherObject.centroid[2] - otherObject.collider.length / 2.0);
-          var f = enemy.object.model.position[2] + enemy.object.centroid[2] - enemy.collider.length / 2.0 - (otherObject.model.position[2] + otherObject.centroid[2] + otherObject.collider.length / 2.0);
+          var e = enemy.model.position[2] + enemy.centroid[2] + enemy.collider.length / 2.0 - (otherObject.model.position[2] + otherObject.centroid[2] - otherObject.collider.length / 2.0);
+          var f = enemy.model.position[2] + enemy.centroid[2] - enemy.collider.length / 2.0 - (otherObject.model.position[2] + otherObject.centroid[2] + otherObject.collider.length / 2.0);
 
           switch (Math.min(Math.abs(a), Math.abs(b), Math.abs(c), Math.abs(d), Math.abs(e), Math.abs(f))) {
             case Math.abs(a):
-              vec3.add(enemy.object.model.position, enemy.object.model.position, vec3.fromValues(-a, 0, 0));
+              vec3.add(enemy.model.position, enemy.model.position, vec3.fromValues(-a, 0, 0));
               break;
             case Math.abs(b):
-              vec3.add(enemy.object.model.position, enemy.object.model.position, vec3.fromValues(-b, 0, 0));
+              vec3.add(enemy.model.position, enemy.model.position, vec3.fromValues(-b, 0, 0));
               break;
             case Math.abs(c):
-              vec3.add(enemy.object.model.position, enemy.object.model.position, vec3.fromValues(0, -c, 0));
+              vec3.add(enemy.model.position, enemy.model.position, vec3.fromValues(0, -c, 0));
               break;
             case Math.abs(d):
-              vec3.add(enemy.object.model.position, enemy.object.model.position, vec3.fromValues(0, -d, 0));
+              vec3.add(enemy.model.position, enemy.model.position, vec3.fromValues(0, -d, 0));
               break;
             case Math.abs(e):
-              vec3.add(enemy.object.model.position, enemy.object.model.position, vec3.fromValues(0, 0, -e));
+              vec3.add(enemy.model.position, enemy.model.position, vec3.fromValues(0, 0, -e));
               break;
             case Math.abs(f):
-              vec3.add(enemy.object.model.position, enemy.object.model.position, vec3.fromValues(0, 0, -f));
+              vec3.add(enemy.model.position, enemy.model.position, vec3.fromValues(0, 0, -f));
               break;
           }
         }
@@ -410,6 +418,8 @@ class Game {
             // Move enemy to player
             vec3.scale(rayDir, rayDir, 0.01);
             vec3.add(enemy.object.model.position, enemy.object.model.position, rayDir);
+            // Make it so enemy doesnt phase thru walls
+            this.checkCollision(enemy.object);
           }
         }
       });
