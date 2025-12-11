@@ -30,11 +30,11 @@ class UIElement {
     };
     
     // Debug
-    console.log(`UIElement ${this.name} created:`, {
-    diffuseTexture: this.model.diffuseTexture,
-    texture: this.model.texture,
-    hasTexture: this.model.texture !== null
-  });
+    //console.log(`UIElement ${this.name} created:`, {
+    //diffuseTexture: this.model.diffuseTexture,
+    //texture: this.model.texture,
+    //hasTexture: this.model.texture !== null
+  //});
 
   }
 
