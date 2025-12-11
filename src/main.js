@@ -1,5 +1,3 @@
-// Test Comment
-
 var state = {};
 var game;
 var sceneFile = "GameScene2.json"; // can change this to be the name of your scene
@@ -157,32 +155,126 @@ async function main() {
     `;
 
   const fragShaderSample =
-    `#version 300 es
-        #define MAX_LIGHTS 20
-        precision highp float;
-        in vec2 oUV; // Added UV input
+  `#version 300 es
+  #define MAX_LIGHTS 20
+  precision highp float;
+  in vec2 oUV;
+  in vec3 oNormal;
+  in vec3 oFragPos;
 
-        struct PointLight {
-            vec3 positions;
-            vec3 colour;
-            float strength;
-        };
-        uniform PointLight mainLight; // Added
-        uniform int samplerExists; // Added
-        uniform vec3 diffuseVal;
-        uniform sampler2D uTexture; // Added
+  struct PointLight {
+      vec3 position;
+      vec3 colour;
+      float strength;
+      float linear;
+      float quadratic;
+  };
+  
+  uniform PointLight mainLight;
+  uniform PointLight pointLights[MAX_LIGHTS];
+  uniform int numLights;
+  uniform int samplerExists;
+  uniform vec3 diffuseVal;
+  uniform vec3 ambientVal;
+  uniform vec3 specularVal;
+  uniform float nVal;
+  uniform sampler2D uTexture;
+  uniform vec3 cameraPosition;
+  uniform float alphaVal;
 
-        out vec4 fragColor;
-        void main() {
-          if (samplerExists == 1) {
-              vec3 textureColour = texture(uTexture, oUV).rgb; // Calculated when exists
-              fragColor = vec4(diffuseVal * textureColour, 1.0);
-              }
-              else {
-            fragColor = vec4(diffuseVal, 1.0); // Default output
-            }
-        }
-        `;
+  out vec4 fragColor;
+  
+  vec3 calculatePointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
+      vec3 lightDir = normalize(light.position - fragPos);
+      
+      // Diffuse shading
+      float diff = max(dot(normal, lightDir), 0.0);
+      vec3 diffuse = diff * light.colour * diffuseVal;
+      
+      // Blinn-Phong specular shading
+      vec3 halfwayDir = normalize(lightDir + viewDir);
+      float spec = pow(max(dot(normal, halfwayDir), 0.0), nVal * 4.0);
+      vec3 specular = spec * light.colour * specularVal;
+      
+      // Attenuation
+      float distance = length(light.position - fragPos);
+      float attenuation = 1.0 / (1.0 + light.linear * distance + light.quadratic * (distance * distance));
+      
+      return (diffuse + specular) * attenuation * light.strength;
+  }
+  
+  void main() {
+      vec4 baseColor = vec4(diffuseVal, alphaVal);
+      
+      if (samplerExists == 1) {
+          baseColor = texture(uTexture, oUV);
+          if (baseColor.a < 0.01) discard;
+      }
+      
+      if (baseColor.a <= 0.0) discard;
+      
+      vec3 normal = normalize(oNormal);
+      vec3 viewDir = normalize(cameraPosition - oFragPos);
+      
+      // Ambient 
+      vec3 result = ambientVal * diffuseVal * 0.15;
+      
+      // Add main light with Blinn-Phong
+      result += calculatePointLight(mainLight, normal, oFragPos, viewDir);
+      
+      // Add other lights with Blinn-Phong
+      for(int i = 0; i < numLights; i++) {
+          result += calculatePointLight(pointLights[i], normal, oFragPos, viewDir);
+      }
+      
+      // Texture/base color
+      result *= baseColor.rgb;
+      
+      result *= 1.0;
+      
+      // Clamp
+      result = min(result, vec3(1.0));
+      
+      fragColor = vec4(result, baseColor.a * alphaVal);
+  }
+  `;
+
+    // Created because passing fragShaderSample when adding UI causes problems
+    // Its just the old fragShaderSample function repurposed for the UI solely (Will change in the event of adding images for UI)  
+    const fragShaderUI = `#version 300 es
+    precision highp float;
+    in vec2 oUV;
+
+    uniform int samplerExists;
+    uniform vec3 diffuseVal;
+    uniform sampler2D uTexture;
+    uniform float alphaVal;
+
+    out vec4 fragColor;
+
+    void main() {
+    if (samplerExists == 1) {
+      // Get texture color WITH ALPHA channel
+      vec4 textureColor = texture(uTexture, oUV);
+      
+      // Apply tint color to RGB channels only
+      vec3 tintedColor = diffuseVal * textureColor.rgb;
+      
+      // Use texture's alpha, modified by alphaVal uniform
+      float finalAlpha = textureColor.a * alphaVal;
+      
+      // Discard fully transparent pixels for performance
+      if (finalAlpha < 0.01) {
+          discard;
+      }
+      
+      fragColor = vec4(tintedColor, finalAlpha);
+  } else {
+      // Default solid color with alpha support
+      fragColor = vec4(diffuseVal, alphaVal);
+  }
+}
+`;
 
   /**
    * Initialize state with new values (some of these you can replace/change)
@@ -204,6 +296,7 @@ async function main() {
     vertShaderSample,
     fragShaderSample,
     vertShaderUI,
+    fragShaderUI,
     canvas: canvas,
     objectCount: 0,
     lightIndices: [],
@@ -240,7 +333,7 @@ async function main() {
   
   for (var i = 0; i < state.loadUIObjects.length; i++) {
     const element = state.loadUIObjects[i];
-    addUIElement(element, state, vertShaderUI, fragShaderSample);
+    addUIElement(element, state, vertShaderUI, fragShaderUI);
   }
 
   const then = new Date();
@@ -460,14 +553,45 @@ function drawScene(gl, deltaTime, state) {
       >= vec3.distance(state.camera.position, vec3.fromValues(bCentroidFour[0], bCentroidFour[1], bCentroidFour[2])) ? -1 : 1;
   });
 
+  // Render UI elements in first person
   if (!state.isTopDownView) {
     // Only renders UI in FP view
+    
+    // Transparency Rendering for UI
+
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    gl.depthMask(false);  // Don't write to depth buffer
+    gl.disable(gl.DEPTH_TEST); // Optional: disable depth test for UI
+    
   state.uiObjects.forEach((object) => {
     // Choose to use our shader
     gl.useProgram(object.programInfo.program);
     {
+      // Set diffuse color
       gl.uniform3fv(object.programInfo.uniformLocations.diffuseVal, object.material.diffuse);
     }
+    // Alpha
+    {
+    if (object.programInfo.uniformLocations.alphaVal) {
+      const alpha = object.material.alpha !== undefined ? object.material.alpha : 1.0;
+      gl.uniform1f(object.programInfo.uniformLocations.alphaVal, alpha);
+    }
+  }
+
+  // Texture Sampler
+  {  if (object.model.texture && object.programInfo.uniformLocations.samplerExists) {
+      gl.uniform1i(object.programInfo.uniformLocations.samplerExists, 1);
+      gl.activeTexture(gl.TEXTURE0);
+      gl.bindTexture(gl.TEXTURE_2D, object.model.texture);
+      if (object.programInfo.uniformLocations.sampler) {
+        gl.uniform1i(object.programInfo.uniformLocations.sampler, 0);
+      }
+    } else if (object.programInfo.uniformLocations.samplerExists) {
+      gl.uniform1i(object.programInfo.uniformLocations.samplerExists, 0);
+    }
+  }
+
     {
       if (object.name == "gunshot" && state.shootDuration > SHOOT_ANIMATION_TIME) {
       } else {
@@ -478,6 +602,13 @@ function drawScene(gl, deltaTime, state) {
         const offset = 0; // Number of elements to skip before starting
         gl.drawElements(gl.TRIANGLES, object.buffers.numVertices, gl.UNSIGNED_SHORT, offset);
       }
+    }
+
+    // Cleanup
+    {
+  gl.depthMask(true);  // Restore depth writing
+  gl.enable(gl.DEPTH_TEST); // Restore depth test
+  gl.disable(gl.BLEND); // Turn off blending
     }
   });
   }
@@ -714,4 +845,6 @@ function createOrthographicMatrix(left, right, bottom, top, near, far) {
   
   return mat;
 }
+
+
 

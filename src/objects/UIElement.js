@@ -8,6 +8,7 @@ class UIElement {
     this.loaded = false;
     this.initialTransform = { position: object.position, scale: object.scale, rotation: object.rotation };
     this.material = { ...object.material };
+
     this.model = {
       vertices: object.model.vertices,
       triangles: object.model.triangles,
@@ -27,6 +28,14 @@ class UIElement {
       fragShader: "",
       vertShader: ""
     };
+    
+    // Debug
+    console.log(`UIElement ${this.name} created:`, {
+    diffuseTexture: this.model.diffuseTexture,
+    texture: this.model.texture,
+    hasTexture: this.model.texture !== null
+  });
+
   }
 
   rotate(axis, angle) {
@@ -61,6 +70,9 @@ class UIElement {
   lightingShader() {
     const shaderProgram = initShaderProgram(this.gl, this.vertShader, this.fragShader);
     // Collect all the info needed to use the shader program.
+
+    const isUIShader = this.vertShader.includes('gl_Position = vec4(aPosition, 1.0)');
+
     const programInfo = {
       // The actual shader program
       program: shaderProgram,
@@ -69,29 +81,34 @@ class UIElement {
       attribLocations: {
         vertexPosition: this.gl.getAttribLocation(shaderProgram, 'aPosition'),
         // vertexNormal: this.gl.getAttribLocation(shaderProgram, 'aNormal'),
-        // vertexUV: this.gl.getAttribLocation(shaderProgram, 'aUV'),
+        vertexUV: this.gl.getAttribLocation(shaderProgram, 'aUV'),
         // vertexBitangent: this.gl.getAttribLocation(shaderProgram, 'aVertBitang')
       },
       uniformLocations: {
-        // projection: this.gl.getUniformLocation(shaderProgram, 'uProjectionMatrix'),
-        // view: this.gl.getUniformLocation(shaderProgram, 'uViewMatrix'),
-        // model: this.gl.getUniformLocation(shaderProgram, 'uModelMatrix'),
-        // normalMatrix: this.gl.getUniformLocation(shaderProgram, 'normalMatrix'),
+        //projection: this.gl.getUniformLocation(shaderProgram, 'uProjectionMatrix'),
+        //view: this.gl.getUniformLocation(shaderProgram, 'uViewMatrix'),
+        //model: this.gl.getUniformLocation(shaderProgram, 'uModelMatrix'),
+        //normalMatrix: this.gl.getUniformLocation(shaderProgram, 'normalMatrix'),
         diffuseVal: this.gl.getUniformLocation(shaderProgram, 'diffuseVal'),
         // ambientVal: this.gl.getUniformLocation(shaderProgram, 'ambientVal'),
         // specularVal: this.gl.getUniformLocation(shaderProgram, 'specularVal'),
         // nVal: this.gl.getUniformLocation(shaderProgram, 'nVal'),
-        // cameraPosition: this.gl.getUniformLocation(shaderProgram, 'uCameraPosition'),
+        //cameraPosition: this.gl.getUniformLocation(shaderProgram, 'uCameraPosition'),
         // numLights: this.gl.getUniformLocation(shaderProgram, 'numLights'),
         // lightPositions: this.gl.getUniformLocation(shaderProgram, 'uLightPositions'),
         // lightColours: this.gl.getUniformLocation(shaderProgram, 'uLightColours'),
         // lightStrengths: this.gl.getUniformLocation(shaderProgram, 'uLightStrengths'),
-        // samplerExists: this.gl.getUniformLocation(shaderProgram, "samplerExists"),
-        // sampler: this.gl.getUniformLocation(shaderProgram, 'uTexture'),
+        samplerExists: this.gl.getUniformLocation(shaderProgram, "samplerExists"),
+        sampler: this.gl.getUniformLocation(shaderProgram, 'uTexture'),
         // normalSamplerExists: this.gl.getUniformLocation(shaderProgram, 'uTextureNormExists'),
         // normalSampler: this.gl.getUniformLocation(shaderProgram, 'uTextureNorm')
+        alphaVal: this.gl.getUniformLocation(shaderProgram, 'alphaVal'),
       },
     };
+
+    if (!isUIShader) {
+    programInfo.attribLocations.vertexNormal = this.gl.getAttribLocation(shaderProgram, 'aNormal');
+  }
 
     shaderValuesErrorCheck(programInfo);
     this.programInfo = programInfo;
@@ -100,7 +117,7 @@ class UIElement {
   initBuffers() {
     //create vertices, normal and indicies arrays
     const positions = new Float32Array(this.model.vertices.flat());
-    //const normals = new Float32Array(this.model.normals.flat());
+    // const normals = new Float32Array(this.model.normals.flat());
     const indices = this.model.triangles ? new Uint16Array(this.model.triangles.flat()) : null;
     const textureCoords = new Float32Array(this.model.uvs); // Enabled
     // const bitangents = new Float32Array(this.model.bitangents);

@@ -445,9 +445,13 @@ function addCustom(object, state, vertShader = null, fragShader = null) {
 }
 
 function addUIElement(object, state, vertShader = null, fragShader = null) {
+  console.log("Loading UI element:", object.name, "diffuseTexture:", object.diffuseTexture);
+  
   let tempObject = new UIElement(state.gl, object);
-  tempObject.vertShader = vertShader ? vertShader : state.vertShaderSample;
-  tempObject.fragShader = fragShader ? fragShader : state.fragShaderSample;
+
+  tempObject.vertShader = vertShader ? vertShader : state.vertShaderUI;
+  tempObject.fragShader = fragShader ? fragShader : state.fragShaderUI;
+
   tempObject.setup();
   addObjectToUI(state, tempObject);
   return tempObject;
