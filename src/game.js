@@ -3,7 +3,8 @@ class Game {
     this.state = state;
     this.spawnedObjects = [];
     this.collidableObjects = [];
-    this.spawnedEnemies = [];
+    this.activeEnemies = [];
+    this.enemyPool = [];
   }
 
   // example - we can add our own custom method to our game and call it using 'this.customMethod()'
@@ -142,19 +143,19 @@ class Game {
       });
       if (nearestObject != null) {
         // Handle player shoot here
-        var possibleIndex = this.spawnedEnemies.findIndex(a => a.object == nearestObject);
+        var possibleIndex = this.activeEnemies.findIndex(a => a.object == nearestObject);
         if (possibleIndex != -1) {
-          let enemy = this.spawnedEnemies[possibleIndex];
+          let enemy = this.activeEnemies[possibleIndex];
           // Temporary work-around for no health data on enemies
           enemy.health -= 1;
           if (enemy.health <= 0) {
             // send them to the abyss!
             enemy.object.model.position = vec3.fromValues(0, -100, 0);
             // remove from spawned enemies list
-            this.spawnedEnemies[possibleIndex] = enemy;
-            this.spawnedEnemies.splice(possibleIndex, 1);
+            this.activeEnemies[possibleIndex] = enemy;
+            this.activeEnemies.splice(possibleIndex, 1);
 
-            if (this.spawnedEnemies.length == 0) {
+            if (this.activeEnemies.length == 0) {
               // all enemies are die.
               console.log("All enemies clear, moving on to next level!")
             }
@@ -269,10 +270,12 @@ class Game {
       
       let enemy = getObject(this.state, `enemy${i}`);
 
-      this.spawnedEnemies.push(new Enemy({
+      let e = new Enemy({
         name: `enemy${i}`,
         health: 3
-      }, enemy))
+      }, enemy);
+      this.activeEnemies.push(e);
+      this.enemyPool.push(e);
 
       var width = 2.5;
       var height = 2.5;
@@ -381,7 +384,7 @@ class Game {
 
 
       // Find player scripts
-      this.spawnedEnemies.forEach(enemy => {        
+      this.activeEnemies.forEach(enemy => {        
         // create a raycast from enemy to player to check if there is a sightline
         // because no way in hell am i coding pathfinding
         var object = enemy.object;
