@@ -5,6 +5,10 @@ class Game {
     this.collidableObjects = [];
     this.activeEnemies = [];
     this.enemyPool = [];
+    this.currentLevel = 1;
+    this.spawnPos = vec3.create();
+    this.spawnFront = vec3.create();
+    this.spawnUp = vec3.create();
   }
 
   // example - we can add our own custom method to our game and call it using 'this.customMethod()'
@@ -38,6 +42,95 @@ class Game {
       }
     };
     this.collidableObjects.push(object);
+  }
+  
+  async spawnEnemy() {
+    // Spawn enemies
+    await spawnObject({
+      name: `enemy${this.enemyPool.length}`,
+      type: "mesh",
+      material: {
+        diffuse: vec3.fromValues(0.3, 0, 0),
+        ambient: vec3.fromValues(1,1,1)
+      },
+      fileName: "15792_Novelty_Head-Full-Demon_v1.obj",
+      position: vec3.fromValues(0,0,0),
+      scale: vec3.fromValues(0.05, 0.05, 0.05),
+        }, this.state);
+    
+    let enemy = getObject(this.state, `enemy${this.enemyPool.length}`);
+
+    let e = new Enemy({
+      name: `enemy${this.enemyPool.length}`,
+      health: 3
+    }, enemy);
+    this.enemyPool.push(e);
+
+    var width = 2.5;
+    var height = 2.5;
+    var length = 2.5;
+    this.createBoxCollider(enemy, width, height, length, (otherObject) => {
+      if (otherObject == this.state.camera) {
+        // LOSE GAME
+        this.state.gameOver = true;
+        if (!this.state.isTopDownView) {
+          toggleCameraView(this.state);
+          let p = document.getElementById("gameOverText");
+          p.textContent = "GAME OVER";
+        }
+      }
+      else if (otherObject.collider.type == "BOX") {
+        // find the closest values of X,Y,Z with respect to the other object
+        // X
+        var a = enemy.model.position[0] + enemy.centroid[0] + enemy.collider.width / 2.0 - (otherObject.model.position[0] + otherObject.centroid[0] - otherObject.collider.width / 2.0);
+        var b = enemy.model.position[0] + enemy.centroid[0] - enemy.collider.width / 2.0 - (otherObject.model.position[0] + otherObject.centroid[0] + otherObject.collider.width / 2.0);
+        // Y
+        var c = enemy.model.position[1] + enemy.centroid[1] + enemy.collider.height / 2.0 - (otherObject.model.position[1] + otherObject.centroid[1] - otherObject.collider.height / 2.0);
+        var d = enemy.model.position[1] + enemy.centroid[1] - enemy.collider.height / 2.0 - (otherObject.model.position[1] + otherObject.centroid[1] + otherObject.collider.height / 2.0);
+        // Z
+        var e = enemy.model.position[2] + enemy.centroid[2] + enemy.collider.length / 2.0 - (otherObject.model.position[2] + otherObject.centroid[2] - otherObject.collider.length / 2.0);
+        var f = enemy.model.position[2] + enemy.centroid[2] - enemy.collider.length / 2.0 - (otherObject.model.position[2] + otherObject.centroid[2] + otherObject.collider.length / 2.0);
+
+        switch (Math.min(Math.abs(a), Math.abs(b), Math.abs(c), Math.abs(d), Math.abs(e), Math.abs(f))) {
+          case Math.abs(a):
+            vec3.add(enemy.model.position, enemy.model.position, vec3.fromValues(-a, 0, 0));
+            break;
+          case Math.abs(b):
+            vec3.add(enemy.model.position, enemy.model.position, vec3.fromValues(-b, 0, 0));
+            break;
+          case Math.abs(c):
+            vec3.add(enemy.model.position, enemy.model.position, vec3.fromValues(0, -c, 0));
+            break;
+          case Math.abs(d):
+            vec3.add(enemy.model.position, enemy.model.position, vec3.fromValues(0, -d, 0));
+            break;
+          case Math.abs(e):
+            vec3.add(enemy.model.position, enemy.model.position, vec3.fromValues(0, 0, -e));
+            break;
+          case Math.abs(f):
+            vec3.add(enemy.model.position, enemy.model.position, vec3.fromValues(0, 0, -f));
+            break;
+        }
+      }
+    });
+    this.collidableObjects.push(enemy);
+    enemy.rotate('x', -Math.PI/2)
+    enemy.forward = vec3.fromValues(1,0,0);
+    
+  }
+
+  async respawnEnemies() {
+    // Will only create as many enemies at a max of 8 since there are only 9 spawnpoints
+    if (this.enemyPool.length < 8) {
+      await this.spawnEnemy();
+    }
+    let locations = getPossibleSpawnLocations(this.enemyPool.length);
+    var i = 0;
+    this.enemyPool.forEach(enemy => {
+      vec3.copy(enemy.object.model.position, locations[i]);
+      this.activeEnemies.push(enemy);
+      i = i + 1;
+    });
   }
 
   // example - function to check if an object is colliding with collidable objects
@@ -81,6 +174,9 @@ class Game {
   // runs once on startup after the scene loads the objects
   async onStart() {
     console.log("On start");
+    vec3.copy(this.spawnPos, state.camera.position);
+    vec3.copy(this.spawnFront, state.camera.front);
+    vec3.copy(this.spawnUp, state.camera.up);
 
     // Set up our own superior input system (allows for holding)
     document.addEventListener('keydown', (event) => {
@@ -99,8 +195,6 @@ class Game {
     }, false);
 
     document.addEventListener('mousedown', (event) => {
-      // For finding positions (purely for testing)
-      console.log(this.state.camera.position);
       // shoot code
       // shoot animation
       this.state.betweenShotsRecharge = 0;
@@ -157,7 +251,12 @@ class Game {
 
             if (this.activeEnemies.length == 0) {
               // all enemies are die.
-              console.log("All enemies clear, moving on to next level!")
+              console.log("All enemies clear, moving on to next level! : " + this.currentLevel.toString())
+              this.currentLevel += 1;
+              vec3.copy(this.state.camera.position, this.spawnPos);
+              vec3.copy(this.state.camera.front, this.spawnFront);
+              vec3.copy(this.state.camera.up, this.spawnUp);
+              this.respawnEnemies();
             }
           }
         }
@@ -218,118 +317,84 @@ class Game {
       }
     });
 
-
-    // example - set an object in onStart before starting our render loop!
-    // this.cube = getObject(this.state, "cube1");
-    // const otherCube = getObject(this.state, "cube2"); // we wont save this as instance var since we dont plan on using it in update
-
-    // example - create sphere colliders on our two objects as an example, we give 2 objects colliders otherwise
-    // no collision can happen
-    // this.createSphereCollider(this.cube, 0.5, (otherObject) => {
-    //   console.log(`This is a custom collision of ${otherObject.name}`)
-    // });
-    // this.createSphereCollider(otherCube, 0.5);
-
-
-
-    //this.customMethod(); // calling our custom method! (we could put spawning logic, collision logic etc in there ;) )
-
-    // example: spawn some stuff before the scene starts
-    // for (let i = 0; i < 10; i++) {
-    //     for (let j = 0; j < 10; j++) {
-    //         for (let k = 0; k < 10; k++) {
-    //             spawnObject({
-    //                 name: `new-Object${i}${j}${k}`,
-    //                 type: "cube",
-    //                 material: {
-    //                     diffuse: randomVec3(0, 1)
-    //                 },
-    //                 position: vec3.fromValues(4 - i, 5 - j, 10 - k),
-    //                 scale: vec3.fromValues(0.5, 0.5, 0.5)
-    //             }, this.state);
-    //         }
-    //     }
-    // }
-
-    let totalEnemies = 2;
-    // Spawn enemies
-    let locations = getPossibleSpawnLocations(totalEnemies);
-    for (let i = 0; i < totalEnemies; i++) {
-      console.log(locations[i]);
-      await spawnObject({
-        name: `enemy${i}`,
-        type: "mesh",
-        material: {
-          diffuse: vec3.fromValues(0.3, 0, 0),
-          ambient: vec3.fromValues(1,1,1)
-        },
-        fileName: "15792_Novelty_Head-Full-Demon_v1.obj",
-        position: locations[i],
-        scale: vec3.fromValues(0.05, 0.05, 0.05),
-          }, this.state);
+    // let totalEnemies = 2;
+    // // Spawn enemies
+    // let locations = getPossibleSpawnLocations(totalEnemies);
+    // for (let i = 0; i < totalEnemies; i++) {
+    //   console.log(locations[i]);
+    //   await spawnObject({
+    //     name: `enemy${i}`,
+    //     type: "mesh",
+    //     material: {
+    //       diffuse: vec3.fromValues(0.3, 0, 0),
+    //       ambient: vec3.fromValues(1,1,1)
+    //     },
+    //     fileName: "15792_Novelty_Head-Full-Demon_v1.obj",
+    //     position: locations[i],
+    //     scale: vec3.fromValues(0.05, 0.05, 0.05),
+    //       }, this.state);
       
-      let enemy = getObject(this.state, `enemy${i}`);
+    //   let enemy = getObject(this.state, `enemy${i}`);
 
-      let e = new Enemy({
-        name: `enemy${i}`,
-        health: 3
-      }, enemy);
-      this.activeEnemies.push(e);
-      this.enemyPool.push(e);
+    //   let e = new Enemy({
+    //     name: `enemy${i}`,
+    //     health: 3
+    //   }, enemy);
+    //   this.activeEnemies.push(e);
+    //   this.enemyPool.push(e);
 
-      var width = 2.5;
-      var height = 2.5;
-      var length = 2.5;
-      this.createBoxCollider(enemy, width, height, length, (otherObject) => {
-        if (otherObject == this.state.camera) {
-          // LOSE GAME
-          //console.log("Player has died");
-          // Death state
-          this.state.gameOver = true;
-          if (!this.state.isTopDownView) {
-            toggleCameraView(this.state);
-            let p = document.getElementById("gameOverText");
-            p.textContent = "GAME OVER";
-          }
-        }
-        else if (otherObject.collider.type == "BOX") {
-          // find the closest values of X,Y,Z with respect to the other object
-          // X
-          var a = enemy.model.position[0] + enemy.centroid[0] + enemy.collider.width / 2.0 - (otherObject.model.position[0] + otherObject.centroid[0] - otherObject.collider.width / 2.0);
-          var b = enemy.model.position[0] + enemy.centroid[0] - enemy.collider.width / 2.0 - (otherObject.model.position[0] + otherObject.centroid[0] + otherObject.collider.width / 2.0);
-          // Y
-          var c = enemy.model.position[1] + enemy.centroid[1] + enemy.collider.height / 2.0 - (otherObject.model.position[1] + otherObject.centroid[1] - otherObject.collider.height / 2.0);
-          var d = enemy.model.position[1] + enemy.centroid[1] - enemy.collider.height / 2.0 - (otherObject.model.position[1] + otherObject.centroid[1] + otherObject.collider.height / 2.0);
-          // Z
-          var e = enemy.model.position[2] + enemy.centroid[2] + enemy.collider.length / 2.0 - (otherObject.model.position[2] + otherObject.centroid[2] - otherObject.collider.length / 2.0);
-          var f = enemy.model.position[2] + enemy.centroid[2] - enemy.collider.length / 2.0 - (otherObject.model.position[2] + otherObject.centroid[2] + otherObject.collider.length / 2.0);
+    //   var width = 2.5;
+    //   var height = 2.5;
+    //   var length = 2.5;
+    //   this.createBoxCollider(enemy, width, height, length, (otherObject) => {
+    //     if (otherObject == this.state.camera) {
+    //       // LOSE GAME
+    //       // Death state
+    //       this.state.gameOver = true;
+    //       if (!this.state.isTopDownView) {
+    //         toggleCameraView(this.state);
+    //         let p = document.getElementById("gameOverText");
+    //         p.textContent = "GAME OVER";
+    //       }
+    //     }
+    //     else if (otherObject.collider.type == "BOX") {
+    //       // find the closest values of X,Y,Z with respect to the other object
+    //       // X
+    //       var a = enemy.model.position[0] + enemy.centroid[0] + enemy.collider.width / 2.0 - (otherObject.model.position[0] + otherObject.centroid[0] - otherObject.collider.width / 2.0);
+    //       var b = enemy.model.position[0] + enemy.centroid[0] - enemy.collider.width / 2.0 - (otherObject.model.position[0] + otherObject.centroid[0] + otherObject.collider.width / 2.0);
+    //       // Y
+    //       var c = enemy.model.position[1] + enemy.centroid[1] + enemy.collider.height / 2.0 - (otherObject.model.position[1] + otherObject.centroid[1] - otherObject.collider.height / 2.0);
+    //       var d = enemy.model.position[1] + enemy.centroid[1] - enemy.collider.height / 2.0 - (otherObject.model.position[1] + otherObject.centroid[1] + otherObject.collider.height / 2.0);
+    //       // Z
+    //       var e = enemy.model.position[2] + enemy.centroid[2] + enemy.collider.length / 2.0 - (otherObject.model.position[2] + otherObject.centroid[2] - otherObject.collider.length / 2.0);
+    //       var f = enemy.model.position[2] + enemy.centroid[2] - enemy.collider.length / 2.0 - (otherObject.model.position[2] + otherObject.centroid[2] + otherObject.collider.length / 2.0);
 
-          switch (Math.min(Math.abs(a), Math.abs(b), Math.abs(c), Math.abs(d), Math.abs(e), Math.abs(f))) {
-            case Math.abs(a):
-              vec3.add(enemy.model.position, enemy.model.position, vec3.fromValues(-a, 0, 0));
-              break;
-            case Math.abs(b):
-              vec3.add(enemy.model.position, enemy.model.position, vec3.fromValues(-b, 0, 0));
-              break;
-            case Math.abs(c):
-              vec3.add(enemy.model.position, enemy.model.position, vec3.fromValues(0, -c, 0));
-              break;
-            case Math.abs(d):
-              vec3.add(enemy.model.position, enemy.model.position, vec3.fromValues(0, -d, 0));
-              break;
-            case Math.abs(e):
-              vec3.add(enemy.model.position, enemy.model.position, vec3.fromValues(0, 0, -e));
-              break;
-            case Math.abs(f):
-              vec3.add(enemy.model.position, enemy.model.position, vec3.fromValues(0, 0, -f));
-              break;
-          }
-        }
-      });
-      this.collidableObjects.push(enemy);
-      enemy.rotate('x', -Math.PI/2)
-      enemy.forward = vec3.fromValues(1,0,0);
-    }
+    //       switch (Math.min(Math.abs(a), Math.abs(b), Math.abs(c), Math.abs(d), Math.abs(e), Math.abs(f))) {
+    //         case Math.abs(a):
+    //           vec3.add(enemy.model.position, enemy.model.position, vec3.fromValues(-a, 0, 0));
+    //           break;
+    //         case Math.abs(b):
+    //           vec3.add(enemy.model.position, enemy.model.position, vec3.fromValues(-b, 0, 0));
+    //           break;
+    //         case Math.abs(c):
+    //           vec3.add(enemy.model.position, enemy.model.position, vec3.fromValues(0, -c, 0));
+    //           break;
+    //         case Math.abs(d):
+    //           vec3.add(enemy.model.position, enemy.model.position, vec3.fromValues(0, -d, 0));
+    //           break;
+    //         case Math.abs(e):
+    //           vec3.add(enemy.model.position, enemy.model.position, vec3.fromValues(0, 0, -e));
+    //           break;
+    //         case Math.abs(f):
+    //           vec3.add(enemy.model.position, enemy.model.position, vec3.fromValues(0, 0, -f));
+    //           break;
+    //       }
+    //     }
+    //   });
+    //   this.collidableObjects.push(enemy);
+    //   enemy.rotate('x', -Math.PI/2)
+    //   enemy.forward = vec3.fromValues(1,0,0);
+    // }
 
 
     // example: spawn in objects, set constantRotate to true for them (used below) and give them a collider
@@ -349,6 +414,7 @@ class Game {
     //     this.spawnedObjects.push(tempObject);     // add these to a spawned objects list
     //     this.collidableObjects.push(tempObject);  // say these can be collided into
     //   }
+    await this.respawnEnemies();
   }
 
   // Runs once every frame non stop after the scene loads
