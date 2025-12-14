@@ -258,9 +258,8 @@ class Game {
         },
         fileName: "15792_Novelty_Head-Full-Demon_v1.obj",
         position: vec3.fromValues(20, 8, -21.59871034869866),
-        scale: vec3.fromValues(0.08, 0.08, 0.08)
-        // NOTE: DO NOT ADD ROTATION IT WILL BREAK THE ROTATING TOWARDS PLAYER THING OK BYE
-      }, this.state);
+        scale: vec3.fromValues(0.08, 0.08, 0.08),
+          }, this.state);
       
       let enemy = getObject(this.state, `enemy${i}`);
 
@@ -319,6 +318,8 @@ class Game {
         }
       });
       this.collidableObjects.push(enemy);
+      enemy.rotate('x', -Math.PI/2)
+      enemy.forward = vec3.fromValues(1,0,0);
     }
 
 
@@ -418,11 +419,13 @@ class Game {
             var cross = vec3.create();
             vec3.cross(cross, vec3.fromValues(enemy.forward[0], 0, enemy.forward[2]), vec3.fromValues(rayDir[0], 0, rayDir[2]));
             var angle = vec3.angle(vec3.fromValues(enemy.forward[0], 0, enemy.forward[2]), vec3.fromValues(rayDir[0], 0, rayDir[2]));
-            mat4.rotate(enemy.object.model.rotation, enemy.object.model.rotation, angle, cross);
+
+            // Sign of cross tells which way to turn, angle tells how much
+            enemy.object.rotate('z', Math.sign(cross[1])*angle);
             vec3.copy(enemy.forward, rayDir);
 
             // Move enemy to player
-            vec3.scale(rayDir, rayDir, 0.01);
+            vec3.scale(rayDir, rayDir, deltaTime);
             vec3.add(enemy.object.model.position, enemy.object.model.position, rayDir);
             // Make it so enemy doesnt phase thru walls
             this.checkCollision(enemy.object);

@@ -2,9 +2,9 @@ var state = {};
 var game;
 var sceneFile = "GameScene2.json"; // can change this to be the name of your scene
 var uiFile = "ui.json"; // can change this to be the name of your scene
-const WALK_SPEED = 0.02;
-const RUN_SPEED = 0.08;
-var currentSpeed = 0.01;
+const WALK_SPEED = 2;
+const RUN_SPEED = 8;
+var currentSpeed = 1;
 const TIME_BETWEEN_GUNFIRE = 0.2;
 const SHOOT_ANIMATION_TIME = 0.1;
 
@@ -205,19 +205,18 @@ async function main() {
   
   void main() {
       vec4 baseColor = vec4(diffuseVal, alphaVal);
-      
       if (samplerExists == 1) {
           baseColor = texture(uTexture, oUV);
-          if (baseColor.a < 0.01) discard;
+          if (baseColor.a < 0.01) discard; // This is for invisible hitboxes, which are applied to cubes by default but dont want to show that
       }
       
-      if (baseColor.a <= 0.0) discard;
+      //if (baseColor.a <= 0.0) discard;
       
       vec3 normal = normalize(oNormal);
       vec3 viewDir = normalize(cameraPosition - oFragPos);
       
       // Ambient 
-      vec3 result = ambientVal * diffuseVal * 0.15;
+      vec3 result = ambientVal * diffuseVal * 0.15; // 0.15 here to make everything darker
       
       // Add main light with Blinn-Phong
       result += calculatePointLight(mainLight, normal, oFragPos, viewDir);
@@ -229,8 +228,6 @@ async function main() {
       
       // Texture/base color
       result *= baseColor.rgb;
-      
-      result *= 1.0;
       
       // Clamp
       result = min(result, vec3(1.0));
@@ -443,7 +440,7 @@ function startRendering(gl, state) {
     then = now;
 
     state.deltaTime = deltaTime;
-    handleMovement(state);
+    handleMovement(state, deltaTime);
     drawScene(gl, deltaTime, state);
     game.onUpdate(deltaTime); //constantly call our game loop
 
@@ -455,7 +452,7 @@ function startRendering(gl, state) {
 }
 
 // Superior movement
-function handleMovement(state) {
+function handleMovement(state, deltaTime) {
   
   // Only allow movement when not in top-down view
   if (state.isTopDownView) {
@@ -482,7 +479,7 @@ function handleMovement(state) {
       right[1] = 0;
       vec3.normalize(right, right);
 
-      vec3.add(state.camera.position, state.camera.position, vec3.fromValues(-currentSpeed*right[0], 0.0, -currentSpeed*right[2]));
+      vec3.add(state.camera.position, state.camera.position, vec3.fromValues(-currentSpeed*deltaTime*right[0], 0.0, -currentSpeed*deltaTime*right[2]));
       state.camera.model.position = state.camera.position
   }
   if (state.keysPressed["d"]) {
@@ -498,7 +495,7 @@ function handleMovement(state) {
       right[1] = 0;
       vec3.normalize(right, right);
 
-      vec3.add(state.camera.position, state.camera.position, vec3.fromValues(currentSpeed*right[0], 0.0, currentSpeed*right[2]));
+      vec3.add(state.camera.position, state.camera.position, vec3.fromValues(currentSpeed*deltaTime*right[0], 0.0, currentSpeed*deltaTime*right[2]));
       state.camera.model.position = state.camera.position
   }
   if (state.keysPressed["w"]) {
@@ -508,7 +505,7 @@ function handleMovement(state) {
       at[1] = 0;
       vec3.normalize(at, at);
 
-      vec3.add(state.camera.position, state.camera.position, vec3.fromValues(currentSpeed*at[0], 0.0, currentSpeed*at[2]));
+      vec3.add(state.camera.position, state.camera.position, vec3.fromValues(currentSpeed*deltaTime*at[0], 0.0, currentSpeed*deltaTime*at[2]));
       state.camera.model.position = state.camera.position
   }
   if (state.keysPressed["s"]) {
@@ -518,7 +515,7 @@ function handleMovement(state) {
       at[1] = 0;
       vec3.normalize(at, at);
 
-      vec3.add(state.camera.position, state.camera.position, vec3.fromValues(-currentSpeed*at[0], 0.0, -currentSpeed*at[2]));
+      vec3.add(state.camera.position, state.camera.position, vec3.fromValues(-currentSpeed*deltaTime*at[0], 0.0, -currentSpeed*deltaTime*at[2]));
       state.camera.model.position = state.camera.position
   }
 }
@@ -762,7 +759,7 @@ function drawScene(gl, deltaTime, state) {
 
         //if its a mesh then we don't use an index buffer and use drawArrays instead of drawElements
         if (object.type === "mesh" || object.type === "meshCustom") {
-          gl.drawArrays(gl.TRIANGLES, offset, object.buffers.numVertices / 3);
+          gl.drawArrays(gl.TRIANGLES, offset, object.buffers.numVertices);
         } else {
           gl.drawElements(gl.TRIANGLES, object.buffers.numVertices, gl.UNSIGNED_SHORT, offset);
         }
