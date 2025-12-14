@@ -30,20 +30,28 @@ function randomVec3(min, max) {
     Math.random(min, max),
   )
 }
-
-function getRandomPositionInBounds() {
-  // room 1
-  if (Math.random() < 0.5) {
-    return vec3.fromValues(
-      Math.random(-11.25, 11.25),
-      3.6267051696777344,
-      Math.random(-11.24999925494194, 10.829392370651476)
-    );
+function getRandomInt(max) {
+  var result = Math.floor(Math.random() * max)
+  if (result == max) {
+    result -= 1;
   }
-  // room 2
-  return vec3.fromValues(
-    Math.random(-11.25, 11.25),
-    3.6267051696777344,
-    Math.random(38.558009318687255, 86.24999925485463)
-  );
+  return result;
+}
+
+function getPossibleSpawnLocations(num) {
+  let xLocations = [-2.5,19.5,41.5];
+  let zLocations = [24,2.5,-19.5];
+  let locations = [];
+  for (i=0; i < num; i++) {
+    var tries = 0;
+    var spawnLocation = vec3.fromValues(xLocations[getRandomInt(3)], 6, zLocations[getRandomInt(3)]);
+    while (locations.find(a => a[0] == spawnLocation[0] && a[2] == spawnLocation[2]) != null && tries != 100) {
+        spawnLocation = vec3.fromValues(xLocations[getRandomInt(3)], 6, zLocations[getRandomInt(3)]);
+        tries += 1;
+    }
+    if (tries != 100) {
+      locations.push(spawnLocation);
+    }
+  }
+  return locations;
 }

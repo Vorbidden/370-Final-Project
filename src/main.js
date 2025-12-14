@@ -298,7 +298,7 @@ async function main() {
     objectCount: 0,
     lightIndices: [],
     keyboard: {},
-    mouse: { sensitivity: 0.004 },
+    mouse: { sensitivity: 0.2 },
     meshCache: {},
     samplerExists: 0,
     samplerNormExists: 0,
@@ -348,6 +348,7 @@ async function main() {
     document.addEventListener("pointerlockchange", lockChangeAlert, false);
     function lockChangeAlert() {
         if (document.pointerLockElement === canvas) {
+            if (state.isTopDownView && !state.gameOver) { toggleCameraView(state); }
             document.addEventListener("mousemove", updatePosition, false);
         } else {
             document.removeEventListener("mousemove", updatePosition, false);
@@ -356,15 +357,11 @@ async function main() {
 
     const tracker = document.getElementById("tracker");
 
-    function updatePosition(e) {
-        // update at = normalize(center - pos)
-        if (state.isTopDownView) {
-          return;
-        }
-        
+    function updatePosition(e) {        
         let camFront = vec3.fromValues(0, 0, 0);
         vec3.add(camFront, state.camera.position, state.camera.front);
         if (e.movementX != 0) {
+            // update at = normalize(center - pos)
             var at = vec3.create();
             vec3.subtract(at, camFront, state.camera.position);
             vec3.normalize(at, at);
@@ -374,7 +371,7 @@ async function main() {
             vec3.cross(right, at, state.camera.up);
 
             // center +- e * right
-            vec3.scale(right, right, e.movementX * state.mouse.sensitivity)
+            vec3.scale(right, right, e.movementX * state.mouse.sensitivity * state.deltaTime)
             vec3.add(camFront, camFront, right)
             vec3.subtract(state.camera.front, camFront, state.camera.position);
             state.camera.up[1] = 10.0; // removes weird camera tilting
@@ -383,7 +380,7 @@ async function main() {
         if (e.movementY != 0) {
             // center +- e * up
             var scaleUp = vec3.create();
-            vec3.scale(scaleUp, state.camera.up, e.movementY  * -state.mouse.sensitivity);
+            vec3.scale(scaleUp, state.camera.up, e.movementY  * -state.mouse.sensitivity * state.deltaTime);
             vec3.add(camFront, camFront, scaleUp);
             vec3.subtract(state.camera.front, camFront, state.camera.position);
 

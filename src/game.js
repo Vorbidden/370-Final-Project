@@ -250,8 +250,11 @@ class Game {
     //     }
     // }
 
+    let totalEnemies = 2;
     // Spawn enemies
-    for (let i = 0; i < 1; i++) {
+    let locations = getPossibleSpawnLocations(totalEnemies);
+    for (let i = 0; i < totalEnemies; i++) {
+      console.log(locations[i]);
       await spawnObject({
         name: `enemy${i}`,
         type: "mesh",
@@ -260,7 +263,7 @@ class Game {
           ambient: vec3.fromValues(1,1,1)
         },
         fileName: "15792_Novelty_Head-Full-Demon_v1.obj",
-        position: vec3.fromValues(20, 8, -21.59871034869866),
+        position: locations[i],
         scale: vec3.fromValues(0.05, 0.05, 0.05),
           }, this.state);
       
