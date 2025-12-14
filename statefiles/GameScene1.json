@@ -1887,7 +1887,7 @@
     ],
     "pointLights": [
         {
-            "name": "test-light-0",
+            "name": "light-middle",
             "colour": [
                 1,
                 1,
@@ -1895,11 +1895,11 @@
             ],
             "position": [
                 0,
-                15,
+                7,
                 0
             ],
-            "strength": 1.5,
-            "quadratic": 0.032,
+            "strength": 1.0,
+            "quadratic": 0.1,
             "linear": 0.10,
             "constant": 1,
             "nearPlane": 0.1,
@@ -1907,40 +1907,159 @@
             "shadow": true
         },
         {
-            "name": "test-light-1",
+            "name": "lightS",
             "colour": [
-                0.6901960968971252,
-                0.30980393290519714,
-                0.30980393290519714
+                1,
+                1,
+                1
             ],
             "position": [
                 0,
-                1,
-                50
+                7,
+                21
             ],
-            "strength": 1.3,
-            "quadratic": 0.032,
-            "linear": 0.09,
+            "strength": 10,
+            "quadratic": 0.1,
+            "linear": 0.01,
+            "constant": 1,
+            "nearPlane": 0.1,
+            "farPlane": 1000,
+            "shadow": true
+        },
+                {
+            "name": "lightSW",
+            "colour": [
+                1,
+                1,
+                1
+            ],
+            "position": [
+                -21,
+                7,
+                21
+            ],
+            "strength": 10,
+            "quadratic": 0.1,
+            "linear": 0.01,
             "constant": 1,
             "nearPlane": 0.1,
             "farPlane": 1000,
             "shadow": true
         },
         {
-            "name": "test-light-2",
+            "name": "lightSE",
             "colour": [
-                0.545098066329956,
-                0.15294118225574493,
-                0.15294118225574493
+                1,
+                1,
+                1
+            ],
+            "position": [
+                21,
+                7,
+                21
+            ],
+            "strength": 10,
+            "quadratic": 0.1,
+            "linear": 0.01,
+            "constant": 1,
+            "nearPlane": 0.1,
+            "farPlane": 1000,
+            "shadow": true
+        },        
+        {
+            "name": "lightE",
+            "colour": [
+                1,
+                1,
+                1
+            ],
+            "position": [
+                21,
+                7,
+                0
+            ],
+            "strength": 10,
+            "quadratic": 0.1,
+            "linear": 0.01,
+            "constant": 1,
+            "nearPlane": 0.1,
+            "farPlane": 1000,
+            "shadow": true
+        },        {
+            "name": "lightW",
+            "colour": [
+                1,
+                1,
+                1
+            ],
+            "position": [
+                -21,
+                7,
+                0
+            ],
+            "strength": 10,
+            "quadratic": 0.1,
+            "linear": 0.01,
+            "constant": 1,
+            "nearPlane": 0.1,
+            "farPlane": 1000,
+            "shadow": true
+        },        
+        {
+            "name": "lightN",
+            "colour": [
+                1,
+                1,
+                1
             ],
             "position": [
                 0,
-                1,
-                30
+                7,
+                -21
             ],
-            "strength": 1.3,
-            "quadratic": 0.032,
-            "linear": 0.09,
+            "strength": 10,
+            "quadratic": 0.1,
+            "linear": 0.01,
+            "constant": 1,
+            "nearPlane": 0.1,
+            "farPlane": 1000,
+            "shadow": true
+        },        
+        {
+            "name": "lightNE",
+            "colour": [
+                1,
+                1,
+                1
+            ],
+            "position": [
+                21,
+                7,
+                -21
+            ],
+            "strength": 10,
+            "quadratic": 0.1,
+            "linear": 0.01,
+            "constant": 1,
+            "nearPlane": 0.1,
+            "farPlane": 1000,
+            "shadow": true
+        },        
+        {
+            "name": "lightNW",
+            "colour": [
+                1,
+                1,
+                1
+            ],
+            "position": [
+                -21,
+                7,
+                -21
+            ],
+            "strength": 10,
+            "quadratic": 0.1,
+            "linear": 0.01,
             "constant": 1,
             "nearPlane": 0.1,
             "farPlane": 1000,

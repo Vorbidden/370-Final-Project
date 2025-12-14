@@ -1,6 +1,6 @@
 var state = {};
 var game;
-var sceneFile = "GameScene2.json"; // can change this to be the name of your scene
+var sceneFile = "GameScene1.json"; // can change this to be the name of your scene
 var uiFile = "ui.json"; // can change this to be the name of your scene
 const WALK_SPEED = 2;
 const RUN_SPEED = 8;

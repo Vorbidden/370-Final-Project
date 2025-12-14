@@ -98,6 +98,8 @@ class Game {
     }, false);
 
     document.addEventListener('mousedown', (event) => {
+      // For finding positions (purely for testing)
+      console.log(this.state.camera.position);
       // shoot code
       // shoot animation
       this.state.betweenShotsRecharge = 0;
@@ -254,11 +256,12 @@ class Game {
         name: `enemy${i}`,
         type: "mesh",
         material: {
-          diffuse: vec3.fromValues(0.3, 0, 0)
+          diffuse: vec3.fromValues(0.3, 0, 0),
+          ambient: vec3.fromValues(1,1,1)
         },
         fileName: "15792_Novelty_Head-Full-Demon_v1.obj",
         position: vec3.fromValues(20, 8, -21.59871034869866),
-        scale: vec3.fromValues(0.08, 0.08, 0.08),
+        scale: vec3.fromValues(0.05, 0.05, 0.05),
           }, this.state);
       
       let enemy = getObject(this.state, `enemy${i}`);
@@ -268,9 +271,9 @@ class Game {
         health: 3
       }, enemy))
 
-      var width = 3;
-      var height = 3;
-      var length = 3;
+      var width = 2.5;
+      var height = 2.5;
+      var length = 2.5;
       this.createBoxCollider(enemy, width, height, length, (otherObject) => {
         if (otherObject == this.state.camera) {
           // LOSE GAME
