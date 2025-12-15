@@ -175,9 +175,13 @@ class Game {
   // runs once on startup after the scene loads the objects
   async onStart() {
     console.log("On start");
+    // Save spawnpoint
     vec3.copy(this.spawnPos, state.camera.position);
     vec3.copy(this.spawnFront, state.camera.front);
     vec3.copy(this.spawnUp, state.camera.up);
+
+    let p = document.getElementById("levelNumberText");    
+    p.innerHTML = "Level: " + this.currentLevel.toString();
 
     // Set up our own superior input system (allows for holding)
     document.addEventListener('keydown', (event) => {
@@ -253,7 +257,10 @@ class Game {
             if (this.activeEnemies.length == 0) {
               // all enemies are die.
               console.log("All enemies clear, moving on to next level! : " + this.currentLevel.toString())
+              let p = document.getElementById("levelNumberText");
               this.currentLevel += 1;
+              
+              p.innerHTML = "Level: " + this.currentLevel.toString();
               vec3.copy(this.state.camera.position, this.spawnPos);
               vec3.copy(this.state.camera.front, this.spawnFront);
               vec3.copy(this.state.camera.up, this.spawnUp);
