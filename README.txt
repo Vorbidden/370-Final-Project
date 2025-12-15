@@ -38,7 +38,7 @@ a first person shooter where your goal is to hunt down all of the demons by shoo
 The enemies will get progressively harder as you progress, good luck!
 
 ## Controls
-Move mouse up and down to aim
+Move mouse to aim
 W A S D keys for movement (forward left right backwards respectively)
 Left click to shoot
 M to view map
