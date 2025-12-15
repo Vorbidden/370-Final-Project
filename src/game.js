@@ -128,6 +128,7 @@ class Game {
     var i = 0;
     this.enemyPool.forEach(enemy => {
       vec3.copy(enemy.object.model.position, locations[i]);
+      enemy.health = this.currentLevel + 2;
       this.activeEnemies.push(enemy);
       i = i + 1;
     });
@@ -448,7 +449,6 @@ class Game {
     if (!this.state.isTopDownView && this.state.camera.collider) {
       this.checkCollision(this.state.camera);
 
-
       // Find player scripts
       this.activeEnemies.forEach(enemy => {        
         // create a raycast from enemy to player to check if there is a sightline
@@ -500,7 +500,7 @@ class Game {
             vec3.copy(enemy.forward, rayDir);
 
             // Move enemy to player
-            vec3.scale(rayDir, rayDir, deltaTime);
+            vec3.scale(rayDir, rayDir, deltaTime * this.currentLevel);
             vec3.add(enemy.object.model.position, enemy.object.model.position, rayDir);
             // Make it so enemy doesnt phase thru walls
             this.checkCollision(enemy.object);

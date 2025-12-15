@@ -2,7 +2,7 @@ var state = {};
 var game;
 var sceneFile = "GameScene1.json"; // can change this to be the name of your scene
 var uiFile = "ui.json"; // can change this to be the name of your scene
-const WALK_SPEED = 2;
+const WALK_SPEED = 4;
 const RUN_SPEED = 8;
 var currentSpeed = 1;
 const TIME_BETWEEN_GUNFIRE = 0.2;
@@ -357,7 +357,9 @@ async function main() {
 
     const tracker = document.getElementById("tracker");
 
-    function updatePosition(e) {        
+    function updatePosition(e) {     
+        if (state.gameOver) {return; }   
+        
         let camFront = vec3.fromValues(0, 0, 0);
         vec3.add(camFront, state.camera.position, state.camera.front);
         if (e.movementX != 0) {
