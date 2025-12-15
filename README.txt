@@ -33,5 +33,14 @@ This will open a web browser in port 8000 and run your project.
 
 ## About
 
-This is just a template to get you started in making a game using Refinery. Feel free to edit all of this code and change whatever you'd like. And as always have fun. 
-Contact Zach through discord or Dana if you have any questions.
+This is a game for our final project in 370 computer graphics course at MacEwan Univeristy, 
+a first person shooter where your goal is to hunt down all of the demons by shooting them. 
+The enemies will get progressively harder as you progress, good luck!
+
+## Controls
+Move mouse up and down to aim
+W A S D keys for movement (forward left right backwards respectively)
+Left click to shoot
+M to view map
+
+GL HF!
