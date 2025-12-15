@@ -39,7 +39,7 @@ The enemies will get progressively harder as you progress, good luck!
 ## Controls
 
 Move mouse to aim
-W A S D keys for movement (forward left right backwards respectively)
+W A S D keys for movement (forward left backwards right respectively)
 Left click to shoot
 M to view map
 
