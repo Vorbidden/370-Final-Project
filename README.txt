@@ -30,7 +30,6 @@ in /src/objects
 
 This will open a web browser in port 8000 and run your project.
 
-
 ## About
 
 This is a game for our final project in 370 computer graphics course at MacEwan Univeristy, 
@@ -38,6 +37,7 @@ a first person shooter where your goal is to hunt down all of the demons by shoo
 The enemies will get progressively harder as you progress, good luck!
 
 ## Controls
+
 Move mouse to aim
 W A S D keys for movement (forward left right backwards respectively)
 Left click to shoot
